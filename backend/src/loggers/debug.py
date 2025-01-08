@@ -4,8 +4,8 @@ from pathlib import Path
 
 LOGGER_PATH = Path(__file__).parent.parent.resolve() / "debug" / "debugs.log"
 
-
-print(f"Logging to: {LOGGER_PATH}")
+if not LOGGER_PATH.exists():
+    LOGGER_PATH.touch()
 
 logger = logging.getLogger("Exeption_logger")
 
