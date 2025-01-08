@@ -33,7 +33,7 @@ async def get_users(db: db_dependency) -> List[UserResponse]:
     return await db.list_all_users()
 
 
-@router.post("/")
+@router.post("/", status_code=201)
 async def register_user(userdata: UserData, db: db_dependency) -> dict:
     try:
         userdata = userdata.model_dump()
@@ -83,7 +83,7 @@ async def refresh(
     username = validate_refresh_token(refresh_token)
     debuger.debug(f"username: {username}")
 
-    user = db.get_user_by_username(username)
+    user = await db.get_user_by_username(username)
 
     if not user:
         raise CREDENTIAL_EXEPTION
@@ -104,7 +104,7 @@ async def get_current_user(user: user_dependency) -> UserResponse:
     return user
 
 
-@router.delete("/{id}")
+@router.delete("/")
 async def delete_user(user: user_dependency, db: db_dependency) -> dict:
     username = await db.delete_user(user.id)
 

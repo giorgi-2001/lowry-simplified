@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import CheckConstraint
 
 from typing import Annotated
 
@@ -23,14 +24,20 @@ class User(Base):
 
     # projects = relationship("Project", backref="user")
 
+    __table_args__ = (
+        CheckConstraint("LENGTH(username) > 1", name="username_min_length"),
+        CheckConstraint("LENGTH(email) > 5", name="email_min_length"),
+        CheckConstraint("LENGTH(password) > 8", name="password_min_length"),
+    )
+
     def to_dict(self):
         return {
             "id": self.id,
             "username": self.username,
             "email": self.email,
             "created_at": str(self.created_at),
-            "updated_": str(self.updated_)
+            "updated_at": str(self.updated_at)
         }
 
     def __repr__(self):
-        return self.username
+        return f"<User id={self.id} {self.username}>"
