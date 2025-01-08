@@ -3,14 +3,13 @@ from fastapi import Depends, HTTPException, status, Security
 import jwt
 import dotenv
 
+from ..loggers.debug import logger
 from .users_dao import UserDao
 from .models import User
-from ..redis_client import RedisClient
 
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
 import os
-import uuid
 
 
 dotenv.load_dotenv()
@@ -33,41 +32,25 @@ auth_dependency = Annotated[HTTPAuthorizationCredentials, Security(security)]
 db_dependecny = Annotated[UserDao, Depends(UserDao)]
 
 
-def create_access_token(data: dict):
+def create_token(data: dict, type: str):
     to_encode = data.copy()
 
-    expire_access_token = datetime.now(timezone.utc) + timedelta(minutes=10)
+    if type == "access":
+        expire = datetime.now(timezone.utc) + timedelta(minutes=10)
+        secret_key = ACCESS_TOKEN_SECRET_KEY
+    elif type == "refresh":
+        expire = datetime.now(timezone.utc) + timedelta(days=5)
+        secret_key = REFRESH_TOKEN_SECRET_KEY
 
-    to_encode.update({"expire": str(expire_access_token)})
+    to_encode.update({"expire": str(expire)})
 
-    access_token = jwt.encode(
+    token = jwt.encode(
         payload=to_encode,
-        key=ACCESS_TOKEN_SECRET_KEY,
+        key=secret_key,
         algorithm=ALGORITHM,
     )
 
-    return access_token
-
-
-def create_refresh_token(username: str):
-    session_id = str(uuid.uuid4())
-
-    to_encode = {
-        "session_id": session_id,
-        "username": username
-    }
-
-    refresh_token = jwt.encode(
-        payload=to_encode,
-        key=REFRESH_TOKEN_SECRET_KEY,
-        algorithm=ALGORITHM,
-    )
-
-    RedisClient.set_item_to_cache(
-        key=session_id, value=username, exp=timedelta(days=5)
-    )
-
-    return refresh_token
+    return token
 
 
 def validate_refresh_token(token: str):
@@ -77,25 +60,28 @@ def validate_refresh_token(token: str):
             key=REFRESH_TOKEN_SECRET_KEY,
             algorithms=[ALGORITHM]
         )
-    except jwt.InvalidTokenError:
+        logger.debug(f"payload: {payload}")
+    except jwt.InvalidTokenError as err:
+        logger.error(err)
         raise CREDENTIAL_EXEPTION
 
-    session_id = payload.get("session_id")
-    username = payload.get("username")
+    username = payload.get("sub")
+    expire = payload.get("expire")
 
-    if not session_id or not username:
+    logger.debug(f"username: {username}")
+    logger.debug(f"expire: {expire}")
+
+    if not username or not expire:
+        raise CREDENTIAL_EXEPTION
+    
+    exp_date = datetime.fromisoformat(expire)
+
+    logger.debug(f"date: {exp_date}")
+
+    if exp_date < datetime.now(timezone.utc):
         raise CREDENTIAL_EXEPTION
 
-    stored_username = RedisClient.get_item_from_cachce(key=session_id)
-
-    if not stored_username or stored_username != username:
-        raise CREDENTIAL_EXEPTION
-
-    return username, session_id
-
-
-def close_session(session_id):
-    RedisClient.remove_item(key=session_id)
+    return username
 
 
 async def get_authenticated_user(db: db_dependecny, credentials: auth_dependency):

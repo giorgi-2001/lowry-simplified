@@ -10,7 +10,9 @@ class RedisClient:
     @staticmethod
     def get_item_from_cachce(key: str):
         item = redis_client.get(name=key)
-        return json.loads(item) or None
+        if item:
+            return json.loads(item)
+        return None
     
     @staticmethod
     def set_item_to_cache(key: str, value, exp: timedelta):

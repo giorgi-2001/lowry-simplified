@@ -8,14 +8,13 @@ from fastapi import (
 )
 from sqlalchemy.exc import SQLAlchemyError
 
+from ..loggers.debug import logger as debuger
 from .users_dao import UserDao
 from .shcemas import UserData, UserLoginData, UserResponse, Token
 from .utils import hash_password, verify_password
 from .auth import (
-    create_access_token,
-    create_refresh_token,
+    create_token,
     validate_refresh_token,
-    close_session,
     user_dependency,
     CREDENTIAL_EXEPTION
 )
@@ -41,7 +40,7 @@ async def register_user(userdata: UserData, db: db_dependency) -> dict:
         userdata["password"] = hash_password(userdata["password"])
         username = await db.register_user(userdata)
         return {"detail": f"{username} was created"}
-    except SQLAlchemyError as error:
+    except SQLAlchemyError:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="username or email already in use"
@@ -64,8 +63,8 @@ async def login_user(
     
     token_content = {"sub": user.username }
 
-    access_token = create_access_token(token_content)
-    refresh_token = create_refresh_token(user.username)
+    access_token = create_token(token_content, type="access")
+    refresh_token = create_token(token_content, type="refresh")
 
     response.set_cookie("refresh_token", refresh_token)
 
@@ -74,34 +73,28 @@ async def login_user(
 
 @router.get("/refresh")
 async def refresh(
-    request: Request, response: Response, db: db_dependency
+    request: Request, db: db_dependency
 ) -> Token:
     refresh_token = request.cookies.get("refresh_token")
+    debuger.debug(f"token from cookie: {refresh_token}")
     if not refresh_token:
         raise CREDENTIAL_EXEPTION
     
-    username, session_id = validate_refresh_token(refresh_token)
+    username = validate_refresh_token(refresh_token)
+    debuger.debug(f"username: {username}")
 
     user = db.get_user_by_username(username)
 
     if not user:
         raise CREDENTIAL_EXEPTION
 
-    close_session(session_id)
     token_content = {"sub": username}
-    access_token = create_access_token(token_content)
-    refresh_token = create_refresh_token(username)
-
-    response.set_cookie("refresh_token", refresh_token)
+    access_token = create_token(token_content, type="access")
     return Token(access_token=access_token, token_type="Bearer")
 
 
 @router.post("/logout")
 async def logout(request: Request, response: Response) -> dict:
-    token = request.cookies.get("refresh_token")
-    print(token)
-    _, session_id = validate_refresh_token(token)
-    close_session(session_id)
     response.delete_cookie("refresh_token")
     return {"detail": "Loged out"}
 
