@@ -24,6 +24,7 @@ class UserLoginData(BaseModel):
 
 
 class UserResponse(BaseModel):
+    id: int
     username: str
     email: str
     created_at: datetime
