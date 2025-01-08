@@ -3,7 +3,7 @@ from pathlib import Path
 
 
 LOGGER_PATH = Path(__file__).parent.parent.resolve() / "debug" / "debugs.log"
-
+LOGGER_PATH.mkdir(exist_ok=True)
 
 logger = logging.getLogger("Exeption_logger")
 
