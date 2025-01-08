@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 
 
-LOGGER_PATH = Path(__file__).parent.parent.resolve() / "logs" / "debugs.log"
+LOGGER_PATH = Path(__file__).parent.parent.resolve() / "debug" / "debugs.log"
 
 
 logger = logging.getLogger("Exeption_logger")
