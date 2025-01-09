@@ -13,6 +13,20 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - pg-data:/var/lib/postgresql/data
+  
+  minio:
+    image: quay.io/minio/minio:latest
+    container_name: lowry-minio
+    ports:
+      - "9000:9000"
+      - "9001:9001" 
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - minio-data:/data    
+      - minio-config:/root/.minio
+    command: server /data --console-address ":9001"
 
   redis:
     container_name: lowry-redis
@@ -24,3 +38,5 @@ services:
 volumes:
   pg-data:
     driver: local
+  minio-data:
+  minio-config:
