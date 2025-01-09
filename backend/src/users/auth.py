@@ -105,7 +105,6 @@ async def get_authenticated_user(db: db_dependecny, credentials: auth_dependency
         raise CREDENTIAL_EXEPTION
     
     user = await db.get_user_by_username(username)
-    print(user)
 
     if not user:
         raise CREDENTIAL_EXEPTION

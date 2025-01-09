@@ -12,7 +12,7 @@ from datetime import datetime
 from .config import Config
 
 
-DATABASE_URL = Config.get_db()
+DATABASE_URL = Config.get_db_url()
 
 
 engine = create_async_engine(DATABASE_URL)

@@ -6,7 +6,6 @@ import os
 LOGGER_PATH = Path(__file__).parent.parent.resolve() / "debug" / "debugs.log"
 
 if not LOGGER_PATH.exists():
-    print(LOGGER_PATH)
     LOGGER_PATH.parent.mkdir(parents=True, exist_ok=True)
     LOGGER_PATH.touch()
 

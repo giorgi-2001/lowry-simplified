@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .users.router import router as user_router
+from .standards.router import router as standard_router
 
 
 app = FastAPI()
@@ -22,3 +23,5 @@ def greeting():
 
 
 app.include_router(router=user_router, prefix="/api/v1")
+
+app.include_router(router=standard_router, prefix="/api/v1")
