@@ -1,11 +1,14 @@
 import pytest_asyncio
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi.testclient import TestClient
+
+from httpx import AsyncClient, ASGITransport
 
 from .database import engine, SessionLocal, DB_PATH
 from src.database import Base
 from src.users.models import User
+from src.standards.models import Standard
 from src.users.users_dao import UserDao
+from src.standards.dao import StandardDao
 from src.main import app
 
 import os
@@ -23,7 +26,7 @@ async def setup_db():
 @pytest_asyncio.fixture
 async def session():
     async with SessionLocal() as session:
-        async with session.begin() as transaction:
+        async with session.begin():
             yield session
             await session.rollback()
 
@@ -45,19 +48,63 @@ async def user_factory(session: AsyncSession):
     return get_user
 
 
-@pytest_asyncio.fixture()
+@pytest_asyncio.fixture
 async def test_user(user_factory):
     user = await user_factory("TestUser", "test@test.com", "testuser123")
     return user
 
 
 @pytest_asyncio.fixture
+async def standard_factory(session: AsyncSession, test_user):
+    async def create_standard(
+        name, description, image, correlation,
+        slope, y_intercept, user_id=test_user.id,
+    ):
+        standard = Standard(
+            name=name, description=description, image=image,
+            correlation=correlation, slope=slope,
+            y_intercept=y_intercept, user_id=user_id
+        )
+
+        session.add(standard)
+        await session.flush()
+
+        return standard
+    return create_standard
+
+
+@pytest_asyncio.fixture(scope="module")
 async def client():
     class TestUserDao(UserDao):
         session_maker = SessionLocal
 
-    app.dependency_overrides[UserDao] = TestUserDao
+    class TestStandardDao(StandardDao):
+        session_maker = SessionLocal
 
-    yield TestClient(app)
+    app.dependency_overrides[UserDao] = TestUserDao
+    app.dependency_overrides[StandardDao] = TestStandardDao
+
+    base_url = "http://localhost:8000/api/v1"
+
+    async with AsyncClient(
+        transport=ASGITransport(app=app), base_url=base_url
+    ) as client:
+        yield client
     
-    app.dependency_overrides[TestUserDao] = UserDao
+    app.dependency_overrides.pop(UserDao, None)
+    app.dependency_overrides.pop(StandardDao, None)
+
+
+@pytest_asyncio.fixture
+async def login_user(client: AsyncClient):
+    user_data = {
+        "username": "random_user",
+        "password": "password123",
+        "email": "random@random.com"
+    }
+    await client.post("/users/register", json=user_data)
+    response = await client.post("/users/login", json=user_data)
+    token = response.json().get("access_token")
+    client.headers["Authorization"] = f"Bearer {token}"
+    yield
+    client.headers.pop("Authorization")

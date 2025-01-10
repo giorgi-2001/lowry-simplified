@@ -28,25 +28,37 @@ async def list_all_standards(db: db_dependency) -> List[StandardResponse]:
     return await db.list_all_standards()
 
 
-@router.post("/")
+@router.post("/", status_code=status.HTTP_201_CREATED)
 async def upload_file(
     user: user_dependency,
-    name: str = Form(),
-    description: str = Form(),
+    name: str = Form(..., min_length=2),
+    description: str = Form(..., min_length=2),
     file: UploadFile = File(),
 ) -> dict:
+    valid_file_type = (
+        file.filename.endswith(".csv") and
+        file.content_type == "text/csv"
+    )
+
+    if not valid_file_type:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid file type"
+        )
+
     content = await file.read()
     await file.close()
     result = process_standard_data.apply_async(
         args=(name, description, user.id, content)
     )
+    
     return {"task_id": result.id}
 
 
 @router.get("/my-standards")
 async def get_standards_by_username(
-    db: db_dependency,
-    user: user_dependency
+    user: user_dependency,
+    db: db_dependency
 ) -> List[StandardResponse]:
     return await db.get_standards_by_user_id(user.id)
 

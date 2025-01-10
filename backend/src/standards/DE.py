@@ -26,8 +26,13 @@ def process_data(content: bytes):
     df = pd.read_csv(data)
 
     df.columns = [col.lower() for col in df.columns]
-    x_col_name = [col for col in df.columns if "x" in col or "c" in col][0]
+    x_col_names = [col for col in df.columns if "x" in col or "c" in col]
     y_col_names = [col for col in df.columns if "y" in col or "e" in col]
+
+    if not x_col_names or not y_col_names:
+        raise ValueError("File is not formated correctly")
+    
+    x_col_name = x_col_names[0]
 
     df = df.dropna(subset=[x_col_name])
 

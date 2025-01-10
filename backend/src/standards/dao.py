@@ -1,4 +1,4 @@
-from sqlalchemy import select, delete, update, desc
+from sqlalchemy import select, delete, desc
 from sqlalchemy.exc import SQLAlchemyError
 from ..database import SessionLocal
 from .models import Standard
