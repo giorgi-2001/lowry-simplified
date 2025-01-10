@@ -25,6 +25,15 @@ jobs:
       ACCESS_TOKEN_SECRET_KEY: ${{ secrets.ACCESS_TOKEN_SECRET_KEY }}
       REFRESH_TOKEN_SECRET_KEY: ${{ secrets.REFRESH_TOKEN_SECRET_KEY }}
       ALGORITHM: ${{ secrets.ALGORITHM }}
+      MINIO_ROOT_USER: ${{ secrets.MINIO_ROOT_USER }}
+      MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_ROOT_PASSWORD }}
+      MINIO_BUCKET: ${{ secrets.MINIO_BUCKET }}
+      MINIO_ENDPOINT: ${{ secrets.MINIO_ENDPOINT }}
+
+    services:
+      docker:
+        image: docker:19.03.12
+        options: --privileged
 
     steps:
       - name: Checkout code
@@ -39,6 +48,18 @@ jobs:
         run: |
           cd backend
           pip install -r requirements.txt
+          cd ..
+
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install docker-compose -y
+
+      - name: Set up Docker Compose
+        run: docker-compose -f docker-compose.yml up -d
 
       - name: Run tests
-        run: pytest 
+        run: pytest ./backend
+
+
+      

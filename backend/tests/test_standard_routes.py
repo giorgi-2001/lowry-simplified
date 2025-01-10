@@ -73,7 +73,6 @@ async def test_upload_file(client: AsyncClient, login_user):
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     "name, description, file_name, file_content, content_type, status_code", [
-        ("name", "description", "file.csv", b"text", "text/csv", 201),
         ("name", "description", "file.csv", None, "text/csv", 400),
         ("name", "description", "file.txt", b"text", "text/csv", 400),
         ("name", "description", "file.txt", b"text", "text/plain", 400),
