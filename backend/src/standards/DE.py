@@ -76,7 +76,7 @@ def plot_data_and_upload(data, name="plot"):
     plt.figure(figsize=(8, 6))
     plt.title(name.capitalize(), pad=20)
     plt.xlabel(f"Concentration ({unit})", labelpad=15)
-    plt.ylabel("Extinsion", labelpad=15)
+    plt.ylabel("Optical Density", labelpad=15)
 
     plt.scatter(x, y, label="Standard Curve", color="blue")
     plt.plot(x, regr, label="Trendline", linewidth=2)

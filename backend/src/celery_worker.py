@@ -3,8 +3,8 @@ from celery import Celery
 
 celery_worker = Celery(
     "celery",
-    broker="redis://localhost:6379/0",
-    backend="redis://localhost:6379/0",
+    broker="redis://lowry-redis:6379/0",
+    backend="redis://lowry-redis:6379/0",
 )
 
 celery_worker.conf.broker_connection_retry_on_startup = True

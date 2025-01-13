@@ -22,6 +22,7 @@ MINIO_ENDPOINT = os.environ.get("MINIO_ENDPOINT")
 
 
 base_minio_url = f"{MINIO_ENDPOINT}/{MINIO_BUCKET}/"
+public_minio_url = f"http://localhost:9000/{MINIO_BUCKET}/"
 
 
 s3_client = boto3.client(
@@ -57,7 +58,7 @@ class S3:
             ContentType="image/png",
             ACL="public-read"
         )
-        return base_minio_url + name
+        return public_minio_url + name 
     
     @staticmethod
     def delete_file(file_name: str):

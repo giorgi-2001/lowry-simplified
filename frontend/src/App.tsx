@@ -6,17 +6,21 @@ import {
 }from "react-router-dom"
 
 import Layout from "./layouts/Layout"
-import LoginPage from "./pages/LoginPage"
-import HomePage from "./pages/HomePage"
+import LoginPage from "./features/auth/LoginPage"
 import RequireAuth from "./features/auth/RequireAuth"
 import RequireNoAuth from "./features/auth/RequireNoAuth"
 import Refresh from "./features/auth/Refresh"
+import StandardsPage from "./features/standards/StandardsPage"
+import ProjectsPage from "./pages/ProjectsPage"
+import StandardDetails from "./features/standards/StandardDetails"
 
 const router = createBrowserRouter(createRoutesFromElements(
   <Route element={<Refresh />}>
     <Route element={<Layout />}>
       <Route element={<RequireAuth />}>
-        <Route index element={<HomePage />} />
+        <Route index element={<ProjectsPage />} />
+        <Route path="/standards/" element={<StandardsPage />} />
+        <Route path="/standards/:id" element={<StandardDetails />} />
       </Route>
       <Route element={<RequireNoAuth />}> 
         <Route path="/login" element={<LoginPage />} />

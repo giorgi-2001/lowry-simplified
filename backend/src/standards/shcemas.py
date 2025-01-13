@@ -1,14 +1,11 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from datetime import datetime
+    
 
-
-class StandardData(BaseModel):
-    name: str = Field(min_length=4, max_length=40)
-    description: str = Field(min_length=4)
-
-
-class StandardResponse(StandardData):
+class StandardResponse(BaseModel):
     id: int
+    name: str
+    description: str
     image: str
     correlation: float
     slope: float

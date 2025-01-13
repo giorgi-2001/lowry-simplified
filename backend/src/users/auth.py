@@ -42,7 +42,7 @@ def create_token(data: dict, type: str):
         expire = datetime.now(timezone.utc) + timedelta(days=5)
         secret_key = REFRESH_TOKEN_SECRET_KEY
 
-    to_encode.update({"expire": str(expire)})
+    to_encode.update({"expire": expire.isoformat()})
 
     token = jwt.encode(
         payload=to_encode,

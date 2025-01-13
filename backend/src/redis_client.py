@@ -3,7 +3,9 @@ from datetime import timedelta
 import json
 
 
-redis_client = Redis()
+redis_client = Redis(
+    host="lowry-redis"
+)
 
 
 class RedisClient:

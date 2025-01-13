@@ -9,7 +9,7 @@ from fastapi import (
 )
 
 from .dao import StandardDao
-from .shcemas import StandardData, StandardResponse
+from .shcemas import StandardResponse
 from ..tasks.standard_tasks import process_standard_data
 from ..users.auth import user_dependency
 from ..config import S3
