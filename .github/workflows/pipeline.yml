@@ -48,7 +48,7 @@ jobs:
         run: docker-compose -f docker-compose.yml up -d
 
       - name: Run tests inside container
-        run: docker-compose exec -T lowry-backend pytest --maxfail=1 --disable-warnings
+        run: docker-compose exec -T lowry-backend pytest --disable-warnings
 
       - name: Tear down containers
         run: docker-compose down
