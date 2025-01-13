@@ -44,12 +44,6 @@ jobs:
         with:
           python-version: '3.12.3'
 
-      - name: Install dependencies
-        run: |
-          cd backend
-          pip install -r requirements.txt
-          cd ..
-
       - name: Install Docker Compose
         run: |
           sudo apt-get update
@@ -58,8 +52,8 @@ jobs:
       - name: Set up Docker Compose
         run: docker-compose -f docker-compose.yml up -d
 
-      - name: Run tests
-        run: pytest ./backend
+      - name: Run tests inside container
+        run: docker exec -it lowry-backend pytest
 
 
       
