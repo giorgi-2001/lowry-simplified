@@ -12,7 +12,7 @@ on:
       - pre-prod
 
 jobs:
-  # Job to run tests and static analysis on push
+
   run-tests:
     name: Run Tests
     runs-on: ubuntu-latest
@@ -39,11 +39,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python environment
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12.3'
-
       - name: Install Docker Compose
         run: |
           sudo apt-get update
@@ -53,7 +48,10 @@ jobs:
         run: docker-compose -f docker-compose.yml up -d
 
       - name: Run tests inside container
-        run: docker exec -it lowry-backend pytest
+        run: docker-compose exec -T lowry-backend pytest --maxfail=1 --disable-warnings
+
+      - name: Tear down containers
+        run: docker-compose down
 
 
       
