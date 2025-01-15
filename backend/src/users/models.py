@@ -12,7 +12,9 @@ int_pk = Annotated[int, mapped_column(
     index=True
 )]
 
-username = Annotated[str, mapped_column(unique=True, nullable=False)]
+username = Annotated[str, mapped_column(
+    unique=True, nullable=False, index=True
+)]
 email = Annotated[str, mapped_column(unique=True, nullable=False)]
 password = Annotated[str, mapped_column(nullable=False)]
 
@@ -22,7 +24,7 @@ class User(Base):
     email: Mapped[email]
     password: Mapped[password]
 
-    # projects = relationship("Project", backref="user")
+    standards = relationship("Standard", backref="user")
 
     __table_args__ = (
         CheckConstraint("LENGTH(username) > 1", name="username_min_length"),

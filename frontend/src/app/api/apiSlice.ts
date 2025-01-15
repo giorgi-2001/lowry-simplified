@@ -39,9 +39,8 @@ const baseQueryWithReauth: BaseQueryFn<
             const refreshResult = await baseQuery("/users/refresh", api, extraOptions)
 
             if (refreshResult.data) {
-                const data = refreshResult.data
-                api.dispatch(setCredentials(data))
-
+                const data: any = refreshResult.data
+                api.dispatch(setCredentials(data.access_token))
                 result = await baseQuery(args, api, extraOptions)
             } else {
                 api.dispatch(logout())
@@ -55,5 +54,5 @@ export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: baseQueryWithReauth,
     endpoints: () => ({}),
-    tagTypes: ['chat', 'messages']
+    tagTypes: ['Standard', "User"]
 })

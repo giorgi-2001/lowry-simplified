@@ -12,7 +12,7 @@ on:
       - pre-prod
 
 jobs:
-  # Job to run tests and static analysis on push
+
   run-tests:
     name: Run Tests
     runs-on: ubuntu-latest
@@ -25,20 +25,30 @@ jobs:
       ACCESS_TOKEN_SECRET_KEY: ${{ secrets.ACCESS_TOKEN_SECRET_KEY }}
       REFRESH_TOKEN_SECRET_KEY: ${{ secrets.REFRESH_TOKEN_SECRET_KEY }}
       ALGORITHM: ${{ secrets.ALGORITHM }}
+      MINIO_ROOT_USER: ${{ secrets.MINIO_ROOT_USER }}
+      MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_ROOT_PASSWORD }}
+      MINIO_BUCKET: ${{ secrets.MINIO_BUCKET }}
+      MINIO_ENDPOINT: ${{ secrets.MINIO_ENDPOINT }}
+
+    services:
+      docker:
+        image: docker:19.03.12
+        options: --privileged
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python environment
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12.3'
-
-      - name: Install dependencies
+      - name: Install Docker Compose
         run: |
-          cd backend
-          pip install -r requirements.txt
+          sudo apt-get update
+          sudo apt-get install docker-compose -y
 
-      - name: Run tests
-        run: pytest 
+      - name: Set up Docker Compose
+        run: docker-compose -f docker-compose.yml up -d
+
+      - name: Run tests inside container
+        run: docker-compose exec -T backend pytest --maxfail=1 --disable-warnings
+
+
+      

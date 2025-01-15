@@ -33,7 +33,7 @@ async def get_users(db: db_dependency) -> List[UserResponse]:
     return await db.list_all_users()
 
 
-@router.post("/", status_code=201)
+@router.post("/register", status_code=201)
 async def register_user(userdata: UserData, db: db_dependency) -> dict:
     try:
         userdata = userdata.model_dump()
