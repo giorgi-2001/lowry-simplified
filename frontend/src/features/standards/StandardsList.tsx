@@ -58,7 +58,7 @@ const StandardsList = (
   }
 
   return (
-    <section className="max-h-[70vh] overflow-y-scroll">
+    <section className="max-h-[70vh] pr-8 overflow-y-scroll">
       { content }
     </section>
   )

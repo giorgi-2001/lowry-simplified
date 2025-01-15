@@ -13,6 +13,7 @@ import Refresh from "./features/auth/Refresh"
 import StandardsPage from "./features/standards/StandardsPage"
 import ProjectsPage from "./pages/ProjectsPage"
 import StandardDetails from "./features/standards/StandardDetails"
+import UserRegisterPage from "./features/users/UserRegisterPage"
 
 const router = createBrowserRouter(createRoutesFromElements(
   <Route element={<Refresh />}>
@@ -24,6 +25,7 @@ const router = createBrowserRouter(createRoutesFromElements(
       </Route>
       <Route element={<RequireNoAuth />}> 
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<UserRegisterPage />} />
       </Route>
     </Route>
   </Route>

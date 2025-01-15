@@ -13,7 +13,7 @@ const StandardsPage = () => {
   }
 
   return (
-    <div className="wrapper grid grid-cols-[2fr_1fr] gap-16">
+    <div className="wrapper grid grid-cols-[2fr_1fr] gap-8">
       
       <StandardsList 
         isLoading={isLoading}
