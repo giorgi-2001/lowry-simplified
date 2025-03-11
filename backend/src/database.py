@@ -12,7 +12,7 @@ from datetime import datetime
 from .config import Config
 
 
-DATABASE_URL = Config.get_db()
+DATABASE_URL = Config.get_db_url()
 
 
 engine = create_async_engine(DATABASE_URL)
@@ -36,6 +36,6 @@ class Base(AsyncAttrs, DeclarativeBase):
     @declared_attr.directive
     def __tablename__(cls):
         return f"{cls.__name__.lower()}s"
-    
+
     created_at: Mapped[created_at]
     updated_at: Mapped[updated_at]

@@ -15,6 +15,8 @@ sys.path.insert(0, src_path)
 
 from src.database import Base, DATABASE_URL
 from src.users.models import User
+from src.standards.models import Standard
+from src.projects.models import Project
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

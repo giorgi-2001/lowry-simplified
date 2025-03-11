@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+#root {
+    min-height: 100vh;
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+@layer components {
+    .wrapper {
+        @apply w-full max-w-4xl mx-auto px-4
+    }
+}

@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import CheckConstraint
 
 from typing import Annotated
 
@@ -11,9 +12,12 @@ int_pk = Annotated[int, mapped_column(
     index=True
 )]
 
-username = Annotated[str, mapped_column(unique=True, nullable=False)]
+username = Annotated[str, mapped_column(
+    unique=True, nullable=False, index=True
+)]
 email = Annotated[str, mapped_column(unique=True, nullable=False)]
 password = Annotated[str, mapped_column(nullable=False)]
+
 
 class User(Base):
     id: Mapped[int_pk]
@@ -21,7 +25,13 @@ class User(Base):
     email: Mapped[email]
     password: Mapped[password]
 
-    # projects = relationship("Project", backref="user")
+    standards = relationship("Standard", backref="user")
+
+    __table_args__ = (
+        CheckConstraint("LENGTH(username) > 1", name="username_min_length"),
+        CheckConstraint("LENGTH(email) > 5", name="email_min_length"),
+        CheckConstraint("LENGTH(password) > 8", name="password_min_length"),
+    )
 
     def to_dict(self):
         return {
@@ -29,8 +39,8 @@ class User(Base):
             "username": self.username,
             "email": self.email,
             "created_at": str(self.created_at),
-            "updated_": str(self.updated_)
+            "updated_at": str(self.updated_at)
         }
 
     def __repr__(self):
-        return self.username
+        return f"<User id={self.id} {self.username}>"
