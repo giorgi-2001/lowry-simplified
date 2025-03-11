@@ -49,7 +49,7 @@ jobs:
         run: docker-compose -f docker-compose.yml up -d
 
       - name: Run Static Analysis
-        run: flake8
+        run: docker-compose exec -T backend flake8
 
       - name: Run tests inside container
         run: docker-compose exec -T backend pytest --maxfail=1 --disable-warnings
