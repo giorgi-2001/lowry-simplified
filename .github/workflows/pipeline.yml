@@ -14,7 +14,7 @@ on:
 jobs:
 
   run-tests:
-    name: Run Tests
+    name: Run Tests and Static Analysis
     runs-on: ubuntu-latest
     env:
       POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
@@ -29,6 +29,7 @@ jobs:
       MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_ROOT_PASSWORD }}
       MINIO_BUCKET: ${{ secrets.MINIO_BUCKET }}
       MINIO_ENDPOINT: ${{ secrets.MINIO_ENDPOINT }}
+      ENV: "TEST"
 
     services:
       docker:
@@ -46,6 +47,9 @@ jobs:
 
       - name: Set up Docker Compose
         run: docker-compose -f docker-compose.yml up -d
+
+      - name: Run Static Analysis
+        run: flake8
 
       - name: Run tests inside container
         run: docker-compose exec -T backend pytest --maxfail=1 --disable-warnings

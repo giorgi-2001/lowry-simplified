@@ -16,7 +16,7 @@ class UserData(BaseModel):
         if not re.match(regex, email):
             raise ValueError("Invalid email")
         return email
-    
+
 
 class UserLoginData(BaseModel):
     username: str
@@ -34,4 +34,3 @@ class UserResponse(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
-
