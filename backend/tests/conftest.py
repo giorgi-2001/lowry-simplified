@@ -4,11 +4,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from httpx import AsyncClient, ASGITransport
 
 from .database import engine, SessionLocal, DB_PATH
+from .test_project_dao import TestProjectDao
 from src.database import Base
 from src.users.models import User
 from src.standards.models import Standard
+from src.projects.models import Project
 from src.users.users_dao import UserDao
 from src.standards.dao import StandardDao
+from src.projects.dao import ProjectDAO
 from src.main import app
 
 import os
@@ -73,6 +76,21 @@ async def standard_factory(session: AsyncSession, test_user):
     return create_standard
 
 
+@pytest_asyncio.fixture
+async def project_factory(test_user, session: AsyncSession):
+    async def create_standard(
+        name="name", description="description",
+        user_id=test_user.id
+    ):
+        project = Project(
+            name=name, description=description, user_id=user_id
+        )
+        session.add(project)
+        await session.flush()
+        return project
+    return create_standard
+
+
 @pytest_asyncio.fixture(scope="module")
 async def client():
     class TestUserDao(UserDao):
@@ -83,6 +101,7 @@ async def client():
 
     app.dependency_overrides[UserDao] = TestUserDao
     app.dependency_overrides[StandardDao] = TestStandardDao
+    app.dependency_overrides[ProjectDAO] = TestProjectDao
 
     base_url = "http://localhost:8000/api/v1"
 
@@ -90,9 +109,8 @@ async def client():
         transport=ASGITransport(app=app), base_url=base_url
     ) as client:
         yield client
-    
-    app.dependency_overrides.pop(UserDao, None)
-    app.dependency_overrides.pop(StandardDao, None)
+
+    app.dependency_overrides.clear()
 
 
 @pytest_asyncio.fixture

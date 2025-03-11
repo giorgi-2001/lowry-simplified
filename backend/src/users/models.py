@@ -18,6 +18,7 @@ username = Annotated[str, mapped_column(
 email = Annotated[str, mapped_column(unique=True, nullable=False)]
 password = Annotated[str, mapped_column(nullable=False)]
 
+
 class User(Base):
     id: Mapped[int_pk]
     username: Mapped[username]

@@ -31,7 +31,7 @@ def process_data(content: bytes):
 
     if not x_col_names or not y_col_names:
         raise ValueError("File is not formated correctly")
-    
+
     x_col_name = x_col_names[0]
 
     df = df.dropna(subset=[x_col_name])
@@ -39,7 +39,6 @@ def process_data(content: bytes):
     x_col = df[x_col_name]
     y_cols = df[y_col_names]
 
-    
     y_cols: pd.DataFrame = y_cols.apply(lambda row: row.fillna(row.mean()), axis=1)
     y_means = pd.Series(y_cols.mean(axis=1), name="y")
 
@@ -100,7 +99,3 @@ def plot_data_and_upload(data, name="plot"):
     os.remove(path)
 
     return file_url
-
-
-
-    

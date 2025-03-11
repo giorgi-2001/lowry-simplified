@@ -1,4 +1,4 @@
-from sqlalchemy import select, delete, update
+from sqlalchemy import select, delete
 from sqlalchemy.exc import SQLAlchemyError
 
 from ..database import SessionLocal
@@ -16,7 +16,7 @@ class UserDao:
             result = await session.execute(statement)
             users = result.scalars().all()
             return users
-        
+
     @classmethod
     async def get_user_by_username(cls, username: str):
         async with cls.session_maker() as session:
@@ -24,7 +24,7 @@ class UserDao:
             result = await session.execute(statement)
             user = result.scalar_one_or_none()
             return user
-        
+
     @classmethod
     async def register_user(cls, userdata: dict):
         async with cls.session_maker() as session:
@@ -37,11 +37,11 @@ class UserDao:
                     await session.rollback()
                     raise
                 else:
-                     await session.commit()
+                    await session.commit()
 
             await session.refresh(user)
             return user.username
-        
+
     @classmethod
     async def delete_user(cls, id: int):
         async with cls.session_maker() as session:
@@ -52,7 +52,7 @@ class UserDao:
 
                 if not user:
                     return None
-                
+
                 statement = delete(cls.model).where(cls.model.id == id)
                 await session.execute(statement)
                 await session.commit()

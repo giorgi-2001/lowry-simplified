@@ -3,6 +3,10 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .users.router import router as user_router
 from .standards.router import router as standard_router
+from .projects.router import router as project_router
+
+
+BASE_URL = "/api/v1"
 
 
 app = FastAPI()
@@ -22,6 +26,8 @@ def greeting():
     return {"greeting": "Hello"}
 
 
-app.include_router(router=user_router, prefix="/api/v1")
+app.include_router(router=user_router, prefix=BASE_URL)
 
-app.include_router(router=standard_router, prefix="/api/v1")
+app.include_router(router=standard_router, prefix=BASE_URL)
+
+app.include_router(router=project_router, prefix=BASE_URL)

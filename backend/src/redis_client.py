@@ -15,7 +15,7 @@ class RedisClient:
         if item:
             return json.loads(item)
         return None
-    
+
     @staticmethod
     def set_item_to_cache(key: str, value, exp: timedelta):
         item_str = json.dumps(value)

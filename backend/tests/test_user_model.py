@@ -50,7 +50,7 @@ async def test_dublicate_emails(user_factory):
 @pytest.mark.asyncio
 async def test_repr_method(user_factory):
     user = await user_factory("TestUser", "test@test.com", "testuser123")
-    assert repr(user) == f"<User id=1 TestUser>"
+    assert repr(user) == "<User id=1 TestUser>"
 
 
 @pytest.mark.asyncio

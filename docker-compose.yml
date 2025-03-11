@@ -55,7 +55,7 @@ services:
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
       MINIO_BUCKET: ${MINIO_BUCKET}
       MINIO_ENDPOINT: ${MINIO_ENDPOINT}
-    command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+    command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir /app/src
     depends_on:
       - postgres
 
@@ -92,6 +92,8 @@ services:
       - ./frontend:/app
       - /app/node_modules
     command: npm run dev
+    depends_on:
+      - backend
 
 
 volumes:

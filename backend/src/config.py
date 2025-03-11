@@ -42,24 +42,24 @@ class Config:
             f"postgresql+asyncpg://{POSTGRES_USER}:{POSTGRES_PASSWORD}"
             f"@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
         )
-    
+
 
 class S3:
     @staticmethod
     def upload_file(file_path: Path | str, file_name: str):
         s3_client.upload_file(file_path, MINIO_BUCKET, file_name)
-    
+
     @staticmethod
     def upload_image(content: bytes, name: str):
         s3_client.put_object(
             Bucket=MINIO_BUCKET,
-            Key=name, 
+            Key=name,
             Body=content,
             ContentType="image/png",
             ACL="public-read"
         )
-        return public_minio_url + name 
-    
+        return public_minio_url + name
+
     @staticmethod
     def delete_file(file_name: str):
         s3_client.delete_object(

@@ -8,7 +8,6 @@ from fastapi import (
 )
 from sqlalchemy.exc import SQLAlchemyError
 
-from ..loggers.debug import logger as debuger
 from .users_dao import UserDao
 from .shcemas import UserData, UserLoginData, UserResponse, Token
 from .utils import hash_password, verify_password
@@ -45,7 +44,7 @@ async def register_user(userdata: UserData, db: db_dependency) -> dict:
             status_code=status.HTTP_409_CONFLICT,
             detail="username or email already in use"
         )
-    
+
 
 @router.post("/login")
 async def login_user(
@@ -60,8 +59,8 @@ async def login_user(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Invalid login credentials"
         )
-    
-    token_content = {"sub": user.username }
+
+    token_content = {"sub": user.username}
 
     access_token = create_token(token_content, type="access")
     refresh_token = create_token(token_content, type="refresh")
@@ -76,12 +75,10 @@ async def refresh(
     request: Request, db: db_dependency
 ) -> Token:
     refresh_token = request.cookies.get("refresh_token")
-    debuger.debug(f"token from cookie: {refresh_token}")
     if not refresh_token:
         raise CREDENTIAL_EXEPTION
-    
+
     username = validate_refresh_token(refresh_token)
-    debuger.debug(f"username: {username}")
 
     user = await db.get_user_by_username(username)
 
@@ -113,5 +110,5 @@ async def delete_user(user: user_dependency, db: db_dependency) -> dict:
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Could not find user"
         )
-    
+
     return {"detail": f"{username} was deleted"}

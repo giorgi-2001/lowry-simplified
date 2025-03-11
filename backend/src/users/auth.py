@@ -3,7 +3,6 @@ from fastapi import Depends, HTTPException, status, Security
 import jwt
 import dotenv
 
-from ..loggers.debug import logger
 from .users_dao import UserDao
 from .models import User
 
@@ -60,23 +59,16 @@ def validate_refresh_token(token: str):
             key=REFRESH_TOKEN_SECRET_KEY,
             algorithms=[ALGORITHM]
         )
-        logger.debug(f"payload: {payload}")
-    except jwt.InvalidTokenError as err:
-        logger.error(err)
+    except jwt.InvalidTokenError:
         raise CREDENTIAL_EXEPTION
 
     username = payload.get("sub")
     expire = payload.get("expire")
 
-    logger.debug(f"username: {username}")
-    logger.debug(f"expire: {expire}")
-
     if not username or not expire:
         raise CREDENTIAL_EXEPTION
-    
-    exp_date = datetime.fromisoformat(expire)
 
-    logger.debug(f"date: {exp_date}")
+    exp_date = datetime.fromisoformat(expire)
 
     if exp_date < datetime.now(timezone.utc):
         raise CREDENTIAL_EXEPTION
@@ -94,8 +86,8 @@ async def get_authenticated_user(db: db_dependecny, credentials: auth_dependency
             algorithms=[ALGORITHM]
         )
 
-        expiration_date = datetime.fromisoformat(payload["expire"])
-        is_expired = expiration_date < datetime.now(timezone.utc)
+        exp_date = datetime.fromisoformat(payload["expire"])
+        is_expired = exp_date < datetime.now(timezone.utc)
 
         if is_expired:
             raise CREDENTIAL_EXEPTION
@@ -103,12 +95,12 @@ async def get_authenticated_user(db: db_dependecny, credentials: auth_dependency
         username = payload["sub"]
     except (KeyError, jwt.InvalidTokenError):
         raise CREDENTIAL_EXEPTION
-    
+
     user = await db.get_user_by_username(username)
 
     if not user:
         raise CREDENTIAL_EXEPTION
-    
+
     return user
 
 

@@ -2,9 +2,13 @@ import pytest
 import pytest_asyncio
 from httpx import AsyncClient
 from pathlib import Path
+import os
 
 from src.standards.models import Standard
 from .database import SessionLocal
+
+
+ENV = os.getenv("ENV", "DEV")
 
 
 @pytest_asyncio.fixture
@@ -22,6 +26,20 @@ async def temp_std():
             await session.refresh(std)
             return std
     return wrapper
+
+
+@pytest.fixture
+def mock_standard_db_save(monkeypatch):
+    class Mock:
+        def __init__(self, id):
+            self.id = id
+
+    mock_obj = Mock("fake_id")
+
+    monkeypatch.setattr(
+        "src.standards.router.process_standard_data.apply_async",
+        lambda args: mock_obj
+    )
 
 
 @pytest.mark.asyncio
@@ -53,11 +71,11 @@ async def test_upload_file_no_auth(client: AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_upload_file(client: AsyncClient, login_user):
+async def test_upload_file(client: AsyncClient, login_user, mock_standard_db_save):
     path = (
         Path(__file__).parent.joinpath("media")
         .joinpath("standard.csv").resolve()
-    ) 
+    )
     form_data = {
         "name": "Plot",
         "description": "description"
@@ -117,7 +135,7 @@ async def test_delete_standard_forbiden(
 @pytest.mark.asyncio
 async def test_delete_standard(
     client: AsyncClient, login_user, temp_std
-):  
+):
     std = await temp_std(user_id=1)
     response = await client.delete(f"/standards/{std.id}")
     assert response.status_code == 200

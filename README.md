@@ -1,8 +1,8 @@
 # Features to implement
 
 ### projects:
-- [ ] Projects CRUD 
-- [ ] Test Project model and routes
+- [x] Projects CRUD 
+- [x] Test Project model and routes
 - [ ] Frontend
 
 Experiments:

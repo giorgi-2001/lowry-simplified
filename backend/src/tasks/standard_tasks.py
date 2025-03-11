@@ -10,17 +10,14 @@ from celery import Task
 
 def _run_func_in_new_thread(func, args, kwargs):
     with ThreadPoolExecutor() as executor:
-        result = executor.submit(asyncio.run(func, *args **kwargs))
+        result = executor.submit(asyncio.run(func(*args, **kwargs)))
         return result.result()
 
 
 def async_to_sync(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        try:
-            loop = asyncio.get_event_loop()
-        except RuntimeError:
-            raise
+        loop = asyncio.get_event_loop()
 
         if not loop.is_running():
             result = loop.run_until_complete(func(*args, **kwargs))
