@@ -1,6 +1,5 @@
 import logging
 from pathlib import Path
-import os
 
 
 LOGGER_PATH = Path(__file__).parent.parent.resolve() / "debug" / "debugs.log"

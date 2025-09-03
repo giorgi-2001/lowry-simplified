@@ -36,8 +36,7 @@ async def upload_file(
     file: UploadFile = File(),
 ) -> dict:
     valid_file_type = (
-        file.filename.endswith(".csv") and
-        file.content_type == "text/csv"
+        file.filename.endswith(".csv") and file.content_type == "text/csv"
     )
 
     if not valid_file_type:
@@ -51,7 +50,7 @@ async def upload_file(
     result = process_standard_data.apply_async(
         args=(name, description, user.id, content)
     )
-    
+
     return {"task_id": result.id}
 
 
@@ -74,23 +73,23 @@ async def delete_standard_by_id(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Standard was not found"
         )
-    
+
     if standard.user_id != user.id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Forbidden Action"
         )
-    
+
     file_name = "/".join(standard.image.split("/")[-2:])
 
     try:
         S3.delete_file(file_name)
-    except:
+    except Exception:
         # I know this is very bad practice
         # Does not really spoil anything in this case
         # Trying to just shut down error in CI workflow
         print("Unable to delete file. maybe Minio bucket does not exist")
-    
+
     await db.delete_standrd_by_id(id)
-    
+
     return {"detail": f"Standard {id} was deleted"}

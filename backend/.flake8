@@ -1,0 +1,7 @@
+[flake8]
+max-line-length = 120
+exclude = .git, __pycache__, .pytest_cache, env, venv, .venv, migration, build, dist, 
+ignore = E203, W503
+max-complexity = 10
+per-file-ignores = 
+    tests/*: S101

@@ -4,6 +4,7 @@ from httpx import AsyncClient
 
 base_url = "http://localhost:8000/api/v1/users"
 
+
 @pytest.fixture
 def user_data():
     return {
@@ -134,7 +135,7 @@ async def test_delete_user(client: AsyncClient, login_user):
     data = response.json()
     assert response.status_code == 200
     assert data["detail"] == "random_user was deleted"
-    
+
 
 @pytest.mark.asyncio
 async def test_delete_user_with_no_header(client: AsyncClient):
