@@ -5,7 +5,7 @@ import { Link } from "react-router-dom"
 import { format } from "date-fns"
 
 
-const formatDate = (isoString: string): string => {
+export const formatDate = (isoString: string): string => {
   const date = new Date(isoString)
   return format(date, "MMMM dd, yyyy")
 }
