@@ -7,7 +7,7 @@ import pandas as pd
 
 from src.standards.DE import (
     extend_name, process_data, plot_data_and_upload
-) 
+)
 
 
 @pytest.fixture
@@ -28,7 +28,7 @@ def valid_csv_content():
     )
     with open(csv_file_path, "rb") as content:
         return content.read()
-    
+
 
 @pytest.fixture
 def means_data():
@@ -50,8 +50,6 @@ def regression_data():
 
 @pytest.fixture
 def sample_data():
-    import pandas as pd
-    import numpy as np
     df = pd.DataFrame({
         "x": [1, 2, 3],
         "y": [2, 4, 6],
@@ -70,8 +68,9 @@ def test_extend_name(fixed_uuid):
 
 
 def test_process_data_happy_path(
-        valid_csv_content, means_data, regression_data
-    ):
+    valid_csv_content, means_data, regression_data
+):
+
     result = process_data(valid_csv_content)
 
     df = result["df"]
