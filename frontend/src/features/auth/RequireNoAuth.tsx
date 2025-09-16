@@ -5,7 +5,6 @@ import { Outlet, Navigate } from "react-router-dom"
 
 const RequireNoAuth = () => {
     const token = useSelector(selectToken)
-    console.log("Token: ", token)
 
     if (token) {
         return <Navigate to=""  replace={true} />

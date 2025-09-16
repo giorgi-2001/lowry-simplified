@@ -1,5 +1,5 @@
 import { useRegisterUserMutation } from "./userApiSlice"
-import { FormEvent, useState } from "react"
+import { FormEvent, useState, useRef } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import useValidateForm from "./useValidateForm"
 
@@ -19,19 +19,27 @@ const UserRegisterForm = () => {
         password2Error, validatePassword2
     } = useValidateForm()
 
-    const validInput = !usernameError && !passwordError && !password2Error && !emailError
-    const emptyFields = !username || !email || !password || !password2
-    const canNotSubmit = !validInput || emptyFields
+    const validInput = () => !usernameError && !passwordError && !password2Error && !emailError
+    const emptyFields = () => !username || !email || !password || !password2
 
-    console.log(canNotSubmit)
+    const canNotSubmit =  () => !validInput() || emptyFields()
 
     const [ register ] = useRegisterUserMutation()
 
     const navigate = useNavigate()
 
 
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
+        if (e.key == "Enter") {
+            e.preventDefault()
+        }
+    }
+
+
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
+
+        if (canNotSubmit()) return
 
         try {
             const data = { username, email, password }
@@ -39,12 +47,12 @@ const UserRegisterForm = () => {
             await register(data).unwrap()
             navigate("/login")
         } catch (error: any) {
-            setError(error.data.detail)
+            setError(JSON.stringify(error.data.detail))
         }
     }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+    <form onKeyDown={handleKeyDown} onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div>
             <label className="block mb-1 ml-1" htmlFor="username">Username</label>
             <input
@@ -121,7 +129,7 @@ const UserRegisterForm = () => {
         </div>
         <div className="flex items-center gap-4 justify-between">
             <button 
-                disabled={canNotSubmit}
+                disabled={canNotSubmit()}
                 className="
                 button block
                 bg-indigo-400 w-fit px-6 py-1.5 text-white 

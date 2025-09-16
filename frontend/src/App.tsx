@@ -14,12 +14,15 @@ import StandardsPage from "./features/standards/StandardsPage"
 import StandardDetails from "./features/standards/StandardDetails"
 import UserRegisterPage from "./features/users/UserRegisterPage"
 import ProjectList from "./features/projects/ProjectList"
+import ProjectDetails from "./features/projects/ProjectDetails"
 
 const router = createBrowserRouter(createRoutesFromElements(
   <Route element={<Refresh />}>
     <Route element={<Layout />}>
       <Route element={<RequireAuth />}>
         <Route index element={<ProjectList />} />
+        <Route path="/projects/" element={<ProjectList />} />
+        <Route path="/projects/:projectId" element={<ProjectDetails />} />
         <Route path="/standards/" element={<StandardsPage />} />
         <Route path="/standards/:id" element={<StandardDetails />} />
       </Route>
