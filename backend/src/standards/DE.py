@@ -12,9 +12,6 @@ import uuid
 
 media_path = Path(__file__).parent.parent.joinpath("media").joinpath("standards").resolve()
 
-if not media_path.exists():
-    media_path.mkdir(parents=True, exist_ok=True)
-
 
 def extend_name(name: str):
     extentsion = str(uuid.uuid4())
@@ -34,7 +31,7 @@ def process_data(content: bytes):
 
     x_col_name = x_col_names[0]
 
-    df = df.dropna(subset=[x_col_name])
+    df.dropna(subset=[x_col_name], inplace=True)
 
     x_col = df[x_col_name]
     y_cols = df[y_col_names]
@@ -42,21 +39,21 @@ def process_data(content: bytes):
     y_cols: pd.DataFrame = y_cols.apply(lambda row: row.fillna(row.mean()), axis=1)
     y_means = pd.Series(y_cols.mean(axis=1), name="y")
 
-    concentration_uint = x_col_name.split("(")[1].replace(")", "")
+    concentration_unit = x_col_name.split("(")[1].replace(")", "")
     x_col.name = "x"
 
     # perform linear regression
     correlation = np.corrcoef(x_col, y_means)[0, 1]
     slope, y_intercept = np.polyfit(x_col, y_means, 1)
     regression = [x * slope + y_intercept for x in x_col]
-    regr_serries = pd.Series(regression, name="regression")
+    regr_serries = pd.Series(regression, index=x_col.index, name="regression")
 
     df = pd.concat([x_col, y_means, regr_serries], axis=1)
 
     return {
         "df": df,
         "info": {
-            "unit": concentration_uint,
+            "unit": concentration_unit,
             "correlation": correlation,
             "slope": slope,
             "y_intercept": y_intercept
@@ -86,6 +83,10 @@ def plot_data_and_upload(data, name="plot"):
     plt.tight_layout()
 
     name = name.replace(" ", "_").strip()
+
+    if not media_path.exists():
+        media_path.mkdir(parents=True, exist_ok=True)
+
     path = media_path / f"{name}.png"
 
     plt.savefig(path)

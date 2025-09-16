@@ -13,6 +13,7 @@ const ProjectForm = () => {
         const projData = { name, description }
         try {
             await createProject(projData).unwrap()
+            setShowForm(false)
         } catch (error) {
             console.log(error)
         }

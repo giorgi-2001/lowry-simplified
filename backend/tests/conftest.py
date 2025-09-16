@@ -91,7 +91,7 @@ async def project_factory(test_user, session: AsyncSession):
     return create_standard
 
 
-@pytest_asyncio.fixture(scope="module")
+@pytest_asyncio.fixture(scope="session")
 async def client():
     class TestUserDao(UserDao):
         session_maker = SessionLocal

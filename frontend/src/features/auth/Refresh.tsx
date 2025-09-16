@@ -13,7 +13,7 @@ const Refresh = () => {
     useEffect(() => {
         if (token || refreshAttempted.current) return
 
-        const refresh_state = async () => {
+        const refreshState = async () => {
             try {
                 await refresh(undefined).unwrap()
             } catch (error) {
@@ -21,7 +21,7 @@ const Refresh = () => {
             }
         }
     
-        refresh_state()
+        refreshState()
 
         return () => { refreshAttempted.current = true }
     }, [])

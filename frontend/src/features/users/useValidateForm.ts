@@ -35,7 +35,9 @@ const useValidateForm = () => {
         }
     }
 
-    const validatePassword2 = (e: FocusEvent<HTMLInputElement>, password: string) => {
+    const validatePassword2 = (
+        e: FocusEvent<HTMLInputElement>, password: string
+    ) => {
         if (e.target.value !== password) {
             setPassword2Error("Passwords do not match!")
         } else {
