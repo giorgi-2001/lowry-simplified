@@ -23,7 +23,7 @@ class Standard(Base):
     id: Mapped[int_pk]
     name: Mapped[text]
     description: Mapped[text]
-    image: Mapped[str]
+    image: Mapped[img]
     correlation: Mapped[float_not_null]
     slope: Mapped[float_not_null]
     y_intercept: Mapped[float_not_null]

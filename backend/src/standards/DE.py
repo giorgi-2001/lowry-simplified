@@ -1,14 +1,13 @@
+import os
+import io
+import uuid
+from pathlib import Path
+
 from matplotlib import pyplot as plt
 import pandas as pd
 import numpy as np
 
 from ..config import S3
-
-from pathlib import Path
-import os
-import io
-import uuid
-
 
 media_path = Path(__file__).parent.parent.joinpath("media").joinpath("standards").resolve()
 
@@ -93,9 +92,9 @@ def plot_data_and_upload(data, name="plot"):
     plt.close()
 
     with open(path, "rb") as file:
-        name = extend_name(name)
+        file_name = f"standards/{extend_name(name)}.png"
         content = file.read()
-        file_url = S3.upload_image(content, f"standards/{name}.png")
+        file_url = S3.upload_image(content, file_name)
 
     os.remove(path)
 

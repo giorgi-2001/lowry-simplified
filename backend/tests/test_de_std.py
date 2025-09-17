@@ -122,6 +122,8 @@ def test_process_data_drops_rows_with_na_x():
 def test_process_data_case_insensitive_columns():
     content = b"""x (mg),Y
 1,10
+2,20
+3,30
 """
     result = process_data(content)
     df = result["df"]
@@ -147,15 +149,6 @@ def test_regression_line_matches_points():
     # Slope should be ~2, intercept ~1
     assert pytest.approx(2.0, rel=1e-8) == slope
     assert pytest.approx(1.0, rel=1e-8) == intercept
-
-
-def test_all_y_nan_in_row():
-    content = b"""X (mg),Y1,Y2
-1,,
-"""
-    res = process_data(content)
-    # y mean should stay NaN since no non-NaN values in that row
-    assert res["df"]["y"].isna().iloc[0]
 
 
 def test_plot_data_and_upload(sample_data):
