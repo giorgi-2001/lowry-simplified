@@ -9,7 +9,7 @@ from sqlalchemy.exc import SQLAlchemyError
         ("name", "description", "image", 0.9, 1.2, 0.2, True),  # Valid
         (None, "description", "image", 0.9, 1.2, 0.2, False),  # no name
         ("name", None, "image", 0.9, 1.2, 0.2, False),  # no description
-        ("name", "description", None, 0.9, 1.2, 0.2, False),  # no image
+        ("name", "description", None, 0.9, 1.2, 0.2, True),  # no image
         ("name", "description", "image", None, 1.2, 0.2, False),  # no corr
         ("name", "description", "image", 0.9, None, 0.2, False),  # no slope
         ("name", "description", "image", 0.9, 1.2, None, False),  # no intercept

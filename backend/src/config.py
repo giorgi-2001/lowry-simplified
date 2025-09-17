@@ -35,13 +35,11 @@ s3_client = boto3.client(
 )
 
 
-class Config:
-    @staticmethod
-    def get_db_url():
-        return (
-            f"postgresql+asyncpg://{POSTGRES_USER}:{POSTGRES_PASSWORD}"
-            f"@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
-        )
+def get_db_url():
+    return (
+        f"postgresql+asyncpg://{POSTGRES_USER}:{POSTGRES_PASSWORD}"
+        f"@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
+    )
 
 
 class S3:

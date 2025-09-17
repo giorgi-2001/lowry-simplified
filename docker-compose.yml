@@ -42,19 +42,7 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/app
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_HOST: ${POSTGRES_HOST}
-      POSTGRES_PORT: ${POSTGRES_PORT}
-      ACCESS_TOKEN_SECRET_KEY: ${ACCESS_TOKEN_SECRET_KEY}
-      REFRESH_TOKEN_SECRET_KEY: ${REFRESH_TOKEN_SECRET_KEY}
-      ALGORITHM: ${ALGORITHM}
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
-      MINIO_BUCKET: ${MINIO_BUCKET}
-      MINIO_ENDPOINT: ${MINIO_ENDPOINT}
+    env_file: .env
     command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir /app/src
     depends_on:
       - postgres
@@ -65,19 +53,7 @@ services:
     image: "lowry-celery:v1"
     volumes:
       - ./backend:/app
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_HOST: ${POSTGRES_HOST}
-      POSTGRES_PORT: ${POSTGRES_PORT}
-      ACCESS_TOKEN_SECRET_KEY: ${ACCESS_TOKEN_SECRET_KEY}
-      REFRESH_TOKEN_SECRET_KEY: ${REFRESH_TOKEN_SECRET_KEY}
-      ALGORITHM: ${ALGORITHM}
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
-      MINIO_BUCKET: ${MINIO_BUCKET}
-      MINIO_ENDPOINT: ${MINIO_ENDPOINT}
+    env_file: .env
     command: celery -A src.celery_worker worker --loglevel=info
     depends_on:
       - redis
@@ -86,8 +62,6 @@ services:
     container_name: lowry-frontend
     image: "lowry-frontend:v1"
     build: ./frontend
-    ports:
-      - "5173:5173"
     volumes:
       - ./frontend:/app
       - /app/node_modules
@@ -95,6 +69,14 @@ services:
     depends_on:
       - backend
 
+  nginx:
+    image: nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
 
 volumes:
   pg-data:
