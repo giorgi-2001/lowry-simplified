@@ -15,7 +15,7 @@ text = Annotated[str, mapped_column(nullable=False)]
 img = Annotated[str, mapped_column(nullable=True)]
 float_not_null = Annotated[float, mapped_column(nullable=False)]
 user_id = Annotated[int, mapped_column(
-    ForeignKey(User.id), nullable=False, index=True
+    ForeignKey(User.id, ondelete="CASCADE"), nullable=False, index=True
 )]
 
 

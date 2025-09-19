@@ -47,7 +47,7 @@ Lowry Simplified addresses these issues by providing a centralized, user-friendl
 - [ ] Frontend
 
 ### Experiments:
-- [ ] CRUD / api
+- [x] CRUD / api
 - [ ] DE algorithm
 - [ ] Tests
 - [ ] Frontend
