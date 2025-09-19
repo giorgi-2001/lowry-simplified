@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import ForeignKey, UUID
 
 from ..database import Base
@@ -30,8 +30,6 @@ class Project(Base):
     user_id: Mapped[user_id]
     name: Mapped[text_not_null]
     description: Mapped[text_not_null]
-
-    experiments = relationship("Experiment", backref="project")
 
     def __repr__(self):
         return (

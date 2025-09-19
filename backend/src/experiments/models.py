@@ -8,7 +8,7 @@ from typing import Annotated
 
 
 project_id = Annotated[
-    UUID, mapped_column(ForeignKey(Project.id), nullable=False)
+    UUID, mapped_column(ForeignKey(Project.id, ondelete="CASCADE"), nullable=False)
 ]
 
 standard_id = Annotated[
@@ -26,6 +26,7 @@ class Experiment(Base):
     csv: Mapped[img]
 
     standard = relationship(Standard)
+    project = relationship(Project, backref="experiments")
 
     def __repr__(self):
         return f"<Experiment {self.name}>"

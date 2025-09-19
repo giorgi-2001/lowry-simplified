@@ -5,10 +5,15 @@ from pathlib import Path
 import os
 
 from src.standards.models import Standard
+from src.standards.dao import StandardDao
 from .database import SessionLocal
 
 
 ENV = os.getenv("ENV", "DEV")
+
+
+class TestStandardDao(StandardDao):
+    session_maker = SessionLocal
 
 
 @pytest_asyncio.fixture
