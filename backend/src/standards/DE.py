@@ -1,16 +1,11 @@
+import io
+import uuid
+
 from matplotlib import pyplot as plt
 import pandas as pd
 import numpy as np
 
-from ..config import S3
-
-from pathlib import Path
-import os
-import io
-import uuid
-
-
-media_path = Path(__file__).parent.parent.joinpath("media").joinpath("standards").resolve()
+from ..aws import s3
 
 
 def extend_name(name: str):
@@ -79,24 +74,16 @@ def plot_data_and_upload(data, name="plot"):
 
     plt.grid(visible=True, which='both', linestyle='--', linewidth=0.5)
     plt.legend()
-
     plt.tight_layout()
 
     name = name.replace(" ", "_").strip()
 
-    if not media_path.exists():
-        media_path.mkdir(parents=True, exist_ok=True)
+    with io.BytesIO() as buf:
+        file_name = f"standards/{extend_name(name)}.png"
+        plt.savefig(buf, format="png")
+        buf.seek(0)
+        content = buf.read()
+        file_url = s3.upload_image(name=file_name, content=content)
 
-    path = media_path / f"{name}.png"
-
-    plt.savefig(path)
     plt.close()
-
-    with open(path, "rb") as file:
-        name = extend_name(name)
-        content = file.read()
-        file_url = S3.upload_image(content, f"standards/{name}.png")
-
-    os.remove(path)
-
     return file_url

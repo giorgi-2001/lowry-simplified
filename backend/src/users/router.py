@@ -65,7 +65,7 @@ async def login_user(
     access_token = create_token(token_content, type="access")
     refresh_token = create_token(token_content, type="refresh")
 
-    response.set_cookie("refresh_token", refresh_token)
+    response.set_cookie("refresh_token", refresh_token, samesite="strict", httponly=True)
 
     return Token(access_token=access_token, token_type="Bearer")
 

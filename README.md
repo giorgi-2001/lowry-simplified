@@ -27,8 +27,7 @@ Lowry Simplified addresses these issues by providing a centralized, user-friendl
             MINIO_ENDPOINT - `http://http://lowry-minio:9000`.
 3. Run command - `docker-compose up -d --build`
 4. Run command - `docker-compose exec -t backend alembic upgrade head`
-5. Open http://localhost:9001 and create new bucket with name matching MINIO_BUCKET variable
-6. Open http://localhost:5173 - for UI
+5. Open http://localhost:80 - for UI
     / http://localhost:8000/docs - for API
 
 ## Usage
@@ -44,19 +43,16 @@ Lowry Simplified addresses these issues by providing a centralized, user-friendl
 ### projects:
 - [x] Projects CRUD 
 - [x] Test Project model and routes
-- [ ] Frontend
+- [x] Frontend
 
 ### Experiments:
-- [ ] CRUD / api
-- [ ] DE algorithm
-- [ ] Tests
-- [ ] Frontend
+- [x] CRUD / api
+- [x] DE algorithm
+- [x] Tests
+- [x] Frontend
 
 ### Users:
 - [x] Sugnup page
 - [ ] Password Reset
 - [ ] User Update
-
-### Others:
-- [ ] Messaging system
-
+- [ ] User Profie Page

@@ -9,10 +9,10 @@ from sqlalchemy import func
 from typing import Annotated
 from datetime import datetime
 
-from .config import Config
+from .config import get_db_url
 
 
-DATABASE_URL = Config.get_db_url()
+DATABASE_URL = get_db_url()
 
 
 engine = create_async_engine(DATABASE_URL)

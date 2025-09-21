@@ -17,6 +17,7 @@ from src.database import Base, DATABASE_URL
 from src.users.models import User
 from src.standards.models import Standard
 from src.projects.models import Project
+from src.experiments.models import Experiment
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
