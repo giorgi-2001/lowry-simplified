@@ -43,19 +43,16 @@ Lowry Simplified addresses these issues by providing a centralized, user-friendl
 ### projects:
 - [x] Projects CRUD 
 - [x] Test Project model and routes
-- [ ] Frontend
+- [x] Frontend
 
 ### Experiments:
 - [x] CRUD / api
 - [x] DE algorithm
 - [x] Tests
-- [ ] Frontend
+- [x] Frontend
 
 ### Users:
 - [x] Sugnup page
 - [ ] Password Reset
 - [ ] User Update
-
-### Others:
-- [ ] Messaging system
-
+- [ ] User Profie Page

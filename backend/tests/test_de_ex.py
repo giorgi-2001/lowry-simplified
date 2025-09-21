@@ -13,6 +13,10 @@ def patch_s3_upload(monkeypatch):
         "src.experiments.DE.s3.upload_file",
         mock_upload_file
     )
+    monkeypatch.setattr(
+        "src.experiments.DE.s3.upload_image",
+        mock_upload_file
+    )
 
 
 @pytest.fixture

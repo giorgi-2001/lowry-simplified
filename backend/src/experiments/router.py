@@ -89,7 +89,7 @@ async def create_experiment(
         "name": name,
         "content": file_content,
         "slope": standard.slope,
-        "y_intecept": standard.y_intercept
+        "y_intercept": standard.y_intercept
     })
 
     return {"detail": f"Experiment {experiment_id} was created"}
