@@ -18,6 +18,7 @@ import ProjectDetails from "./features/projects/ProjectDetails"
 import ExpCreationForm from "./features/experiments/ExpCreationForm"
 import ExpDetails from "./features/experiments/ExpDetails"
 
+
 const router = createBrowserRouter(createRoutesFromElements(
   <Route element={<Refresh />}>
     <Route element={<Layout />}>
