@@ -78,6 +78,16 @@ async def existing_experiment(temp_std, temp_project, exp_data):
     await TestExpDAO.delete_experiment(exp_id_2)
 
 
+@pytest.fixture(autouse=True)
+def patch_celery_task(monkeypatch):
+    def mock_apply_async(*args, **kwargs):
+        return "apply_async was called"
+    monkeypatch.setattr(
+        "src.experiments.router.build_experiment_files.apply_async",
+        mock_apply_async
+    )
+
+
 @pytest.mark.asyncio
 async def test_get_exp_success(
     client: AsyncClient, temp_project, login_user

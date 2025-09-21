@@ -9,4 +9,4 @@ celery_worker = Celery(
 
 celery_worker.conf.broker_connection_retry_on_startup = True
 
-celery_worker.autodiscover_tasks(["src.tasks.standard_tasks"])
+celery_worker.autodiscover_tasks(["src.tasks"])

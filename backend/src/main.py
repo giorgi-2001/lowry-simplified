@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -5,12 +6,21 @@ from .users.router import router as user_router
 from .standards.router import router as standard_router
 from .projects.router import router as project_router
 from .experiments.router import router as exp_router
+from .aws import s3
 
 
 BASE_URL = "/api/v1"
 
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    print("APP started...")
+    s3.setup_bucket()
+    yield
+    print("App is shutting down")
+
+
+app = FastAPI(lifespan=lifespan)
 
 
 app.add_middleware(
@@ -20,11 +30,6 @@ app.add_middleware(
     allow_headers=["*"],
     allow_credentials=True
 )
-
-
-@app.get("/", tags=["Greeting"])
-def greeting():
-    return {"greeting": "Hello"}
 
 
 app.include_router(router=user_router, prefix=BASE_URL)

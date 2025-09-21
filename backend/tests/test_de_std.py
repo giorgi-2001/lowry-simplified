@@ -1,5 +1,5 @@
 from pathlib import Path
-from unittest.mock import patch, mock_open
+from unittest.mock import patch
 
 import pytest
 import numpy as np
@@ -156,19 +156,15 @@ def test_plot_data_and_upload(sample_data):
 
     with patch("src.standards.DE.plt.savefig") as mock_savefig, \
          patch("src.standards.DE.plt.close") as mock_close, \
-         patch("builtins.open", mock_open(read_data=b"fakecontent")) as mock_file, \
-         patch("src.standards.DE.S3.upload_image", return_value=fake_url) as mock_upload, \
-         patch("src.standards.DE.extend_name", side_effect=lambda name: name + "_123"), \
-         patch("os.remove") as mock_remove:
+         patch("src.standards.DE.s3.upload_file", return_value=fake_url) as mock_upload, \
+         patch("src.standards.DE.extend_name", side_effect=lambda name: name + "_123"):
 
         result_url = plot_data_and_upload(sample_data, name="plot")
 
     # ---- assertions ----
     mock_savefig.assert_called_once()   # figure was saved
     mock_close.assert_called_once()     # figure was closed
-    mock_file.assert_called_once()      # file was opened
     mock_upload.assert_called_once()    # S3 upload called
-    mock_remove.assert_called_once()    # file removed
 
     # Check returned URL
     assert result_url == fake_url
