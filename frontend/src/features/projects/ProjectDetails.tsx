@@ -1,22 +1,13 @@
-<<<<<<< HEAD
-import { useParams } from "react-router-dom"
-import { useGetProjectsQuery } from "./projectApiSlice"
-=======
 import { Link, useParams } from "react-router-dom"
 import { useGetProjectsQuery } from "./projectApiSlice"
 import DeleteProjectModal from "./DeleteProjectModal"
 import ExpList from "../experiments/ExpList"
 import { formatDate } from "../standards/StandardsList"
 
->>>>>>> 7440e5982c7d4737144f76602525e668beb77ec6
 
 const ProjectDetails = ({}) => {
     const { projectId } = useParams()
     const { data } = useGetProjectsQuery(undefined)
-<<<<<<< HEAD
-    console.log(projectId)
-=======
->>>>>>> 7440e5982c7d4737144f76602525e668beb77ec6
     const project = data?.entities[String(projectId)]
 
     if (!project) {
@@ -27,28 +18,6 @@ const ProjectDetails = ({}) => {
 
   return (
     (
-<<<<<<< HEAD
-    <section className="w-full max-w-3xl mx-auto my-6 p-6 rounded-2xl bg-white shadow-md">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-        Project Metadata:
-      </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <p className="text-sm font-medium text-gray-500 uppercase">Name</p>
-          <p className="text-lg font-semibold text-gray-900">
-            {project.name}
-          </p>
-        </div>
-
-        <div>
-          <p className="text-sm font-medium text-gray-500 uppercase">
-            Description
-          </p>
-          <p className="text-gray-700">{project.description}</p>
-        </div>
-      </div>
-    </section>
-=======
       <>
       <section className="w-full max-w-3xl mx-auto mt-6 p-6 rounded-2xl bg-white shadow-md">
         <div className="flex items-center gap-2 mb-4">
@@ -83,7 +52,6 @@ const ProjectDetails = ({}) => {
         <ExpList projectId={String(projectId)} />
       </section>
       </>
->>>>>>> 7440e5982c7d4737144f76602525e668beb77ec6
   )
   )
 }

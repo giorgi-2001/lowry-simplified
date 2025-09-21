@@ -5,19 +5,7 @@ from matplotlib import pyplot as plt
 import pandas as pd
 import numpy as np
 
-<<<<<<< HEAD
-from ..config import S3
-
-from pathlib import Path
-import os
-import io
-import uuid
-
-
-media_path = Path(__file__).parent.parent.joinpath("media").joinpath("standards").resolve()
-=======
 from ..aws import s3
->>>>>>> 7440e5982c7d4737144f76602525e668beb77ec6
 
 
 def extend_name(name: str):
@@ -89,14 +77,6 @@ def plot_data_and_upload(data, name="plot"):
     plt.tight_layout()
 
     name = name.replace(" ", "_").strip()
-<<<<<<< HEAD
-
-    if not media_path.exists():
-        media_path.mkdir(parents=True, exist_ok=True)
-
-    path = media_path / f"{name}.png"
-=======
->>>>>>> 7440e5982c7d4737144f76602525e668beb77ec6
 
     with io.BytesIO() as buf:
         file_name = f"standards/{extend_name(name)}.png"
