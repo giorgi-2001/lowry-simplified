@@ -83,7 +83,7 @@ def plot_data_and_upload(data, name="plot"):
         plt.savefig(buf, format="png")
         buf.seek(0)
         content = buf.read()
-        file_url = s3.upload_file(name=file_name, content=content)
+        file_url = s3.upload_image(name=file_name, content=content)
 
     plt.close()
     return file_url

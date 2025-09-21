@@ -1,4 +1,5 @@
 import uuid
+import datetime
 from pydantic import BaseModel, Field
 
 
@@ -13,3 +14,4 @@ class ExpResponse(ExpData):
     id: int
     image: str | None
     csv: str | None
+    created_at: datetime.datetime

@@ -18,7 +18,7 @@ def _format_bucket_name(policy: dict, bucket_name: str):
     )
 
 
-def upload_file(
+def upload_image(
     name: str, content: bytes,
     bucket_name: str = MINIO_BUCKET,
     client=s3_client
@@ -28,6 +28,20 @@ def upload_file(
         Key=name,
         Body=content,
         ContentType="image/png",
+        ACL="public-read"
+    )
+    return public_minio_url + name
+
+
+def upload_file(
+    name: str, content: bytes,
+    bucket_name: str = MINIO_BUCKET,
+    client=s3_client
+):
+    client.put_object(
+        Bucket=bucket_name,
+        Key=name,
+        Body=content,
         ACL="public-read"
     )
     return public_minio_url + name

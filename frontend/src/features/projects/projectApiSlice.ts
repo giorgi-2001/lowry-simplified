@@ -43,7 +43,7 @@ export const projectApiSlice = apiSlice.injectEndpoints({
         }),
 
         deleteProject: builder.mutation({
-            query: (id: number) => ({
+            query: (id: string) => ({
                 url: `/projects/${id}`,
                 method: "DELETE",
             }),
