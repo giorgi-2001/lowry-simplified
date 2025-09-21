@@ -10,7 +10,7 @@ from celery import Task
 
 def _run_func_in_new_thread(func, args, kwargs):
     with ThreadPoolExecutor() as executor:
-        result = executor.submit(asyncio.run(func(*args, **kwargs)))
+        result = executor.submit(asyncio.run, func(*args, **kwargs))
         return result.result()
 
 
@@ -22,7 +22,7 @@ def async_to_sync(func):
         if not loop.is_running():
             result = loop.run_until_complete(func(*args, **kwargs))
         else:
-            _run_func_in_new_thread(func, args, kwargs)
+            result = _run_func_in_new_thread(func, args, kwargs)
         return result
     return wrapper
 

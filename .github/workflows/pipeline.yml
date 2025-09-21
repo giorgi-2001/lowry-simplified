@@ -1,6 +1,10 @@
 name: CI/CD Pipeline
 
 on:
+  push:
+    branches:
+      - 'feature/**'
+
   pull_request:
     branches:
       - main
@@ -47,6 +51,3 @@ jobs:
 
       - name: Run tests inside container
         run: docker-compose exec -T backend pytest --maxfail=1 --disable-warnings
-
-
-      

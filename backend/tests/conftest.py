@@ -5,6 +5,8 @@ from httpx import AsyncClient, ASGITransport
 
 from .database import engine, SessionLocal, DB_PATH
 from .test_project_dao import TestProjectDao
+from .test_exp_dao import TestExpDAO
+from .test_standard_routes import TestStandardDao
 from src.database import Base
 from src.users.models import User
 from src.standards.models import Standard
@@ -12,6 +14,7 @@ from src.projects.models import Project
 from src.users.users_dao import UserDao
 from src.standards.dao import StandardDao
 from src.projects.dao import ProjectDAO
+from src.experiments.dao import ExperimentDAO
 from src.main import app
 
 import os
@@ -96,12 +99,10 @@ async def client():
     class TestUserDao(UserDao):
         session_maker = SessionLocal
 
-    class TestStandardDao(StandardDao):
-        session_maker = SessionLocal
-
     app.dependency_overrides[UserDao] = TestUserDao
     app.dependency_overrides[StandardDao] = TestStandardDao
     app.dependency_overrides[ProjectDAO] = TestProjectDao
+    app.dependency_overrides[ExperimentDAO] = TestExpDAO
 
     base_url = "http://localhost:8000/api/v1"
 
@@ -113,15 +114,20 @@ async def client():
     app.dependency_overrides.clear()
 
 
-@pytest_asyncio.fixture
-async def login_user(client: AsyncClient):
+@pytest_asyncio.fixture(scope="module")
+async def registered_user(client: AsyncClient):
     user_data = {
         "username": "random_user",
         "password": "password123",
         "email": "random@random.com"
     }
     await client.post("/users/register", json=user_data)
-    response = await client.post("/users/login", json=user_data)
+    return user_data
+
+
+@pytest_asyncio.fixture
+async def login_user(client: AsyncClient, registered_user):
+    response = await client.post("/users/login", json=registered_user)
     token = response.json().get("access_token")
     client.headers["Authorization"] = f"Bearer {token}"
     yield

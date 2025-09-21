@@ -8,7 +8,7 @@ const baseQuery: BaseQueryFn<
     unknown,
     FetchBaseQueryError
 > = fetchBaseQuery({
-    baseUrl: 'http://localhost:8000/api/v1',
+    baseUrl: '/api/v1/',
     credentials: 'include',
 
     prepareHeaders: (headers: Headers, { getState }) => {

@@ -12,7 +12,7 @@ from .dao import StandardDao
 from .shcemas import StandardResponse
 from ..tasks.standard_tasks import process_standard_data
 from ..users.auth import user_dependency
-from ..config import S3
+from ..aws import s3
 
 from typing import Annotated, List
 
@@ -83,7 +83,7 @@ async def delete_standard_by_id(
     file_name = "/".join(standard.image.split("/")[-2:])
 
     try:
-        S3.delete_file(file_name)
+        s3.delete_file(file_name)
     except Exception:
         # I know this is very bad practice
         # Does not really spoil anything in this case

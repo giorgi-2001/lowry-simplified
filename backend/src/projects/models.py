@@ -31,8 +31,6 @@ class Project(Base):
     name: Mapped[text_not_null]
     description: Mapped[text_not_null]
 
-    # experiments = relationship("Experiment", backref="project")
-
     def __repr__(self):
         return (
             f"Project(Id={self.id} Name={self.name}) "

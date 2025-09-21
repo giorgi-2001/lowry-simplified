@@ -15,6 +15,11 @@ import StandardDetails from "./features/standards/StandardDetails"
 import UserRegisterPage from "./features/users/UserRegisterPage"
 import ProjectList from "./features/projects/ProjectList"
 import ProjectDetails from "./features/projects/ProjectDetails"
+<<<<<<< HEAD
+=======
+import ExpCreationForm from "./features/experiments/ExpCreationForm"
+import ExpDetails from "./features/experiments/ExpDetails"
+>>>>>>> 7440e5982c7d4737144f76602525e668beb77ec6
 
 const router = createBrowserRouter(createRoutesFromElements(
   <Route element={<Refresh />}>
@@ -23,6 +28,11 @@ const router = createBrowserRouter(createRoutesFromElements(
         <Route index element={<ProjectList />} />
         <Route path="/projects/" element={<ProjectList />} />
         <Route path="/projects/:projectId" element={<ProjectDetails />} />
+<<<<<<< HEAD
+=======
+        <Route path="/experiments/create/:projectId" element={<ExpCreationForm />} />
+        <Route path="/experiments/:projectId/:experimentId" element={<ExpDetails />} />
+>>>>>>> 7440e5982c7d4737144f76602525e668beb77ec6
         <Route path="/standards/" element={<StandardsPage />} />
         <Route path="/standards/:id" element={<StandardDetails />} />
       </Route>
