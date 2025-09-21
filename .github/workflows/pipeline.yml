@@ -51,6 +51,3 @@ jobs:
 
       - name: Run tests inside container
         run: docker-compose exec -T backend pytest --maxfail=1 --disable-warnings
-
-
-      
