@@ -7,6 +7,7 @@ from .shcemas import ExpResponse
 from ..users.auth import user_dependency
 from ..standards.router import db_dependency as std_dependency
 from ..projects.router import db_dependency as pj_dependency
+from ..tasks.exp_tasks import build_experiment_files
 
 from typing import Annotated, List
 
@@ -73,9 +74,6 @@ async def create_experiment(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Standard {standard_id} does not exists"
         )
-
-    # DE algorithm goes here:
-
     experiment_data = {
         "name": name,
         "description": description,
@@ -83,6 +81,17 @@ async def create_experiment(
         "standard_id": standard_id
     }
     experiment_id = await exp.create_experiment(experiment_data)
+    file_content = await file.read()
+
+    # DE algorithm goes here:
+    build_experiment_files.apply_async(kwargs={
+        "experiment_id": experiment_id,
+        "name": name,
+        "content": file_content,
+        "slope": standard.slope,
+        "y_intecept": standard.y_intercept
+    })
+
     return {"detail": f"Experiment {experiment_id} was created"}
 
 
@@ -102,5 +111,5 @@ async def delete_experiment(
     if project.user_id != user.id:
         raise FORBIDEB_ERROR
 
-    exp.delete_experiment(experiment_id)
+    await exp.delete_experiment(experiment_id)
     return {"detail": f"Experiment {experiment_id} was deleted"}

@@ -1,5 +1,4 @@
 from sqlalchemy import select, delete
-from sqlalchemy.exc import SQLAlchemyError
 
 from ..database import SessionLocal
 from .models import User
@@ -29,15 +28,9 @@ class UserDao:
     async def register_user(cls, userdata: dict):
         async with cls.session_maker() as session:
             async with session.begin():
-                try:
-                    user = cls.model(**userdata)
-                    session.add(user)
-                    await session.flush()
-                except SQLAlchemyError:
-                    await session.rollback()
-                    raise
-                else:
-                    await session.commit()
+                user = cls.model(**userdata)
+                session.add(user)
+                await session.commit()
 
             await session.refresh(user)
             return user.username
