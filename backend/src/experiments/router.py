@@ -7,7 +7,7 @@ from .shcemas import ExpResponse
 from ..users.auth import user_dependency
 from ..standards.router import db_dependency as std_dependency
 from ..projects.router import db_dependency as pj_dependency
-from ..tasks.exp_tasks import build_experiment_files
+from ..tasks.exp_tasks import build_experiment_files, remove_exp_files
 
 from typing import Annotated, List
 
@@ -111,5 +111,8 @@ async def delete_experiment(
     if project.user_id != user.id:
         raise FORBIDEB_ERROR
 
+    remove_exp_files.apply_async(
+        kwargs={"files": [experiment.image, experiment.csv]}
+    )
     await exp.delete_experiment(experiment_id)
     return {"detail": f"Experiment {experiment_id} was deleted"}

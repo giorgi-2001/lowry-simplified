@@ -86,6 +86,10 @@ def patch_celery_task(monkeypatch):
         "src.experiments.router.build_experiment_files.apply_async",
         mock_apply_async
     )
+    monkeypatch.setattr(
+        "src.experiments.router.remove_exp_files.apply_async",
+        mock_apply_async
+    )
 
 
 @pytest.mark.asyncio

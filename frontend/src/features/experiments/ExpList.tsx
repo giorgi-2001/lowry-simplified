@@ -2,10 +2,16 @@ import { Link } from "react-router-dom"
 import { useDeleteExperimentMutation, useGetExperimentsQuery } from "./expApiSlice"
 import { formatDate } from "../standards/StandardsList"
 
-const ExpList = ({ projectId }: { projectId: string }) => {
+
+type ExpListProps = {
+    projectId: string
+}
+
+
+const ExpList = ({ projectId }: ExpListProps) => {
     const { data } = useGetExperimentsQuery(projectId)
     const [deleteExperiment] = useDeleteExperimentMutation()
-
+    
 
     const epxerimentList = data?.ids.map(id => {
         const exp = data.entities[id]

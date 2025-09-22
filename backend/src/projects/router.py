@@ -91,6 +91,13 @@ async def delete_project(
 
     if project.user_id != user.id:
         raise FORBIDEB_ERROR
+    exp_ids = await db.get_experiment_ids(project_id)
+
+    if exp_ids:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="There are still experiments assosiated with this project. Make sure to remove them first."
+        )
 
     project = await db.delete_project(project_id)
     return {"detail": f"Project {project} was deleted"}

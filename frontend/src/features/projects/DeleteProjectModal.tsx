@@ -1,18 +1,32 @@
-import { useState } from "react"
 import { useDeleteProjectMutation } from "./projectApiSlice"
 import { useNavigate } from "react-router-dom"
 
-const DeleteProjectModal = ({ projectId }: { projectId: string}) => {
-    const [modalOpen, setModalOpen] = useState(false)
+
+type DeleteProjectModalProps = {
+    projectId: string
+    modalOpen: boolean
+    setModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setErrorMessage: React.Dispatch<React.SetStateAction<string>>
+}
+
+
+const DeleteProjectModal = ({
+    projectId, modalOpen, setModalOpen, setErrorMessage
+}: DeleteProjectModalProps) => {
     const navigate = useNavigate()
     const [deleteProject] = useDeleteProjectMutation()
+
 
     const handleDelete = async () => {
         try {
             await deleteProject(projectId).unwrap()
+            setErrorMessage("")
             navigate("/")
-        } catch (error) {
-            console.log(error)
+        } catch (error: any) {
+            if (error && error?.data?.detail) {
+                setErrorMessage(String(error.data.detail))
+                setModalOpen(false)
+            } 
         }
     }
 
