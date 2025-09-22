@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { Link, useParams } from "react-router-dom"
 import { useGetProjectsQuery } from "./projectApiSlice"
 import DeleteProjectModal from "./DeleteProjectModal"
@@ -10,21 +11,33 @@ const ProjectDetails = ({}) => {
     const { data } = useGetProjectsQuery(undefined)
     const project = data?.entities[String(projectId)]
 
+    const [modalOpen, setModalOpen] = useState(false)
+    const [errorMessage, setErrorMessage] = useState("")
+
     if (!project) {
         console.log("No project was found")
         return null
     }
 
-
   return (
     (
       <>
+      { errorMessage &&
+        <p aria-live="assertive" className="w-full max-w-3xl mx-auto my-6 p-4 text-center font-semibold text-rose-700 border-2 border-rose-700 bg-rose-200 rounded-sm">
+          {errorMessage}
+        </p>
+      }
       <section className="w-full max-w-3xl mx-auto mt-6 p-6 rounded-2xl bg-white shadow-md">
         <div className="flex items-center gap-2 mb-4">
           <h2 className="text-2xl justify-between font-semibold text-gray-800">
             {project.name}
           </h2>
-          <DeleteProjectModal projectId={String(projectId)} />
+          <DeleteProjectModal
+            projectId={String(projectId)}
+            modalOpen={modalOpen}
+            setModalOpen={setModalOpen}
+            setErrorMessage={setErrorMessage}
+          />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
@@ -49,7 +62,9 @@ const ProjectDetails = ({}) => {
         >
           Create new experiment
         </Link>
-        <ExpList projectId={String(projectId)} />
+        <ExpList
+          projectId={String(projectId)}
+        />
       </section>
       </>
   )

@@ -2,6 +2,7 @@ from ..database import SessionLocal
 from .models import Project
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
+from sqlalchemy.orm import selectinload
 from sqlalchemy import select, desc, delete, update
 
 from uuid import UUID
@@ -30,6 +31,19 @@ class ProjectDAO:
             result = await session.execute(statement)
             project = result.scalar_one_or_none()
             return project
+
+    @classmethod
+    async def get_experiment_ids(cls, project_id: str):
+        project_id = UUID(project_id)
+        async with cls.session_maker() as session:
+            statement = (
+                select(cls.model)
+                .where(cls.model.id == project_id)
+                .options(selectinload(cls.model.experiments))
+            )
+            result = await session.execute(statement)
+            project = result.scalar_one_or_none()
+            return [e.id for e in project.experiments] if project else []
 
     @classmethod
     async def create_project(cls, project_data: dict):
