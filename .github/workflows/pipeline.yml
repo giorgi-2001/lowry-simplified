@@ -29,25 +29,18 @@ jobs:
       MINIO_ENDPOINT: ${{ secrets.MINIO_ENDPOINT }}
       ENV: "TEST"
 
-    services:
-      docker:
-        image: docker:19.03.12
-        options: --privileged
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Docker Compose
-        run: |
-          sudo apt-get update
-          sudo apt-get install docker-compose -y
+      - name: Build lowry-simplified image
+        run: docker build -t lowry-simplified:latest ./backend
 
-      - name: Set up Docker Compose
-        run: docker-compose -f docker-compose.yml up -d
+      - name: Run lowry-simplified container
+        run: docker run -d --name backend lowry-simplified:latest
 
       - name: Run Static Analysis
-        run: docker-compose exec -T backend flake8
+        run: docker exec -T backend flake8
 
       - name: Run tests inside container
-        run: docker-compose exec -T backend pytest --maxfail=1 --disable-warnings
+        run: docker exec -T backend pytest --maxfail=1 --disable-warnings
