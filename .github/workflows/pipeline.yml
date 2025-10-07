@@ -33,14 +33,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build lowry-simplified image
+      - name: Build backend image
         run: docker build -t lowry-simplified:latest ./backend
 
-      - name: Run lowry-simplified container
+      - name: Run backend container
         run: docker run -d --name backend lowry-simplified:latest
 
       - name: Run Static Analysis
-        run: docker exec -T backend flake8
+        run: docker exec -it backend flake8
 
       - name: Run tests inside container
-        run: docker exec -T backend pytest --maxfail=1 --disable-warnings
+        run: docker exec -it backend pytest --maxfail=1 --disable-warnings
