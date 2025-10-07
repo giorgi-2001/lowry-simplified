@@ -40,7 +40,7 @@ jobs:
         run: docker run -d --name backend lowry-simplified:latest
 
       - name: Run Static Analysis
-        run: docker exec -it backend flake8
+        run: docker exec backend flake8
 
       - name: Run tests inside container
-        run: docker exec -it backend pytest --maxfail=1 --disable-warnings
+        run: docker exec backend pytest --maxfail=1 --disable-warnings
