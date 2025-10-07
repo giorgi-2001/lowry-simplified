@@ -55,7 +55,6 @@ jobs:
             --cache-from=type=local,src=/tmp/.buildx-cache \
             --cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=max \
             -t lowry-simplified:latest \
-            -f ./backend/Dockerfile \
             ./backend
 
       - name: Move new cache into place
