@@ -37,7 +37,24 @@ jobs:
         run: docker build -t lowry-simplified:latest ./backend
 
       - name: Run backend container
-        run: docker run -d --name backend lowry-simplified:latest
+        run: |
+          docker run -d \
+            --name backend \
+            -e POSTGRES_DB=$POSTGRES_DB \
+            -e POSTGRES_USER=$POSTGRES_USER \
+            -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD \
+            -e POSTGRES_HOST=$POSTGRES_HOST \
+            -e POSTGRES_PORT=$POSTGRES_PORT \
+            -e ACCESS_TOKEN_SECRET_KEY=$ACCESS_TOKEN_SECRET_KEY \
+            -e REFRESH_TOKEN_SECRET_KEY=$REFRESH_TOKEN_SECRET_KEY \
+            -e ALGORITHM=$ALGORITHM \
+            -e MINIO_ROOT_USER=$MINIO_ROOT_USER \
+            -e MINIO_ROOT_PASSWORD=$MINIO_ROOT_PASSWORD \
+            -e MINIO_BUCKET=$MINIO_BUCKET \
+            -e MINIO_ENDPOINT=$MINIO_ENDPOINT \
+            -e ENV=$ENV \
+            lowry-simplified:latest \
+            tail -f /dev/null
 
       - name: Run Static Analysis
         run: docker exec backend flake8
