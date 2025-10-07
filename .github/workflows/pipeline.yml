@@ -79,9 +79,6 @@ jobs:
             -e MINIO_ROOT_PASSWORD=$MINIO_ROOT_PASSWORD \
             -e MINIO_BUCKET=$MINIO_BUCKET \
             -e MINIO_ENDPOINT=$MINIO_ENDPOINT \
-            -e BASE_FRONTEND_URL=$BASE_FRONTEND_URL \
-            -e MAIL_USERNAME=$MAIL_USERNAME \
-            -e MAIL_PASSWORD=$MAIL_PASSWORD \
             -e ENV=$ENV \
             lowry-simplified:latest \
             tail -f /dev/null
