@@ -3,14 +3,14 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - 'feature/**'
+      - main
+      - feature/**
 
   pull_request:
     branches:
       - main
 
 jobs:
-
   run-tests:
     name: Run Tests and Static Analysis
     runs-on: ubuntu-latest
@@ -27,6 +27,9 @@ jobs:
       MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_ROOT_PASSWORD }}
       MINIO_BUCKET: ${{ secrets.MINIO_BUCKET }}
       MINIO_ENDPOINT: ${{ secrets.MINIO_ENDPOINT }}
+      BASE_FRONTEND_URL: ${{ secrets.BASE_FRONTEND_URL }}
+      MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+      MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
       ENV: "TEST"
 
     steps:
@@ -51,7 +54,6 @@ jobs:
             --cache-from=type=local,src=/tmp/.buildx-cache \
             --cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=max \
             -t lowry-simplified:latest \
-            -f ./backend/Dockerfile \
             ./backend
 
       - name: Move new cache into place
@@ -60,23 +62,32 @@ jobs:
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
+      - name: Create .env file
+        run: |
+          cat <<EOF > .env
+          POSTGRES_DB=${POSTGRES_DB}
+          POSTGRES_USER=${POSTGRES_USER}
+          POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+          POSTGRES_HOST=${POSTGRES_HOST}
+          POSTGRES_PORT=${POSTGRES_PORT}
+          ACCESS_TOKEN_SECRET_KEY=${ACCESS_TOKEN_SECRET_KEY}
+          REFRESH_TOKEN_SECRET_KEY=${REFRESH_TOKEN_SECRET_KEY}
+          ALGORITHM=${ALGORITHM}
+          MINIO_ROOT_USER=${MINIO_ROOT_USER}
+          MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+          MINIO_BUCKET=${MINIO_BUCKET}
+          MINIO_ENDPOINT=${MINIO_ENDPOINT}
+          BASE_FRONTEND_URL=${BASE_FRONTEND_URL}
+          MAIL_USERNAME=${MAIL_USERNAME}
+          MAIL_PASSWORD=${MAIL_PASSWORD}
+          ENV=${ENV}
+          EOF
+
       - name: Run backend container
         run: |
           docker run -d \
             --name backend \
-            -e POSTGRES_DB=$POSTGRES_DB \
-            -e POSTGRES_USER=$POSTGRES_USER \
-            -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD \
-            -e POSTGRES_HOST=$POSTGRES_HOST \
-            -e POSTGRES_PORT=$POSTGRES_PORT \
-            -e ACCESS_TOKEN_SECRET_KEY=$ACCESS_TOKEN_SECRET_KEY \
-            -e REFRESH_TOKEN_SECRET_KEY=$REFRESH_TOKEN_SECRET_KEY \
-            -e ALGORITHM=$ALGORITHM \
-            -e MINIO_ROOT_USER=$MINIO_ROOT_USER \
-            -e MINIO_ROOT_PASSWORD=$MINIO_ROOT_PASSWORD \
-            -e MINIO_BUCKET=$MINIO_BUCKET \
-            -e MINIO_ENDPOINT=$MINIO_ENDPOINT \
-            -e ENV=$ENV \
+            --env-file .env \
             lowry-simplified:latest \
             tail -f /dev/null
 

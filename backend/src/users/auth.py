@@ -7,7 +7,7 @@ from .users_dao import UserDao
 from .models import User
 
 from datetime import datetime, timedelta, timezone
-from typing import Annotated
+from typing import Annotated, Literal
 import os
 
 
@@ -31,14 +31,17 @@ auth_dependency = Annotated[HTTPAuthorizationCredentials, Security(security)]
 db_dependecny = Annotated[UserDao, Depends(UserDao)]
 
 
-def create_token(data: dict, type: str):
+def create_token(data: dict, type: Literal["access", "refresh", "reset"]):
     to_encode = data.copy()
 
     if type == "access":
-        expire = datetime.now(timezone.utc) + timedelta(minutes=10)
+        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
         secret_key = ACCESS_TOKEN_SECRET_KEY
     elif type == "refresh":
         expire = datetime.now(timezone.utc) + timedelta(days=5)
+        secret_key = REFRESH_TOKEN_SECRET_KEY
+    elif type == "reset":
+        expire = datetime.now(timezone.utc) + timedelta(days=1)
         secret_key = REFRESH_TOKEN_SECRET_KEY
 
     to_encode.update({"expire": expire.isoformat()})

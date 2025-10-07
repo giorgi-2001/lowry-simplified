@@ -34,3 +34,19 @@ class UserResponse(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+
+class Email(BaseModel):
+    email: str
+
+    @field_validator("email")
+    def validate_email(cls, email):
+        regex = r"^(?!.*\.\.)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+        if not re.match(regex, email):
+            raise ValueError("Invalid email")
+        return email
+
+
+class PwdResetData(BaseModel):
+    token: str
+    password: str

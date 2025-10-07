@@ -4,13 +4,15 @@ from fastapi import (
     HTTPException,
     status,
     Response,
-    Request
+    Request,
+    BackgroundTasks
 )
 from sqlalchemy.exc import SQLAlchemyError
 
 from .users_dao import UserDao
-from .shcemas import UserData, UserLoginData, UserResponse, Token
+from .shcemas import UserData, UserLoginData, UserResponse, Token, Email, PwdResetData
 from .utils import hash_password, verify_password
+from .mail_funcs import send_email
 from .auth import (
     create_token,
     validate_refresh_token,
@@ -112,3 +114,43 @@ async def delete_user(user: user_dependency, db: db_dependency) -> dict:
         )
 
     return {"detail": f"{username} was deleted"}
+
+
+@router.post("/password-reset")
+async def initiate_password_reset(
+    email: Email, db: db_dependency, task: BackgroundTasks
+):
+    generic_response = {
+        "detail": (
+            "Password reset procedure has been initiated. "
+            "Please go to your email inbox to proceed"
+        )
+    }
+    user = await db.get_user_by_email(email.email)
+    if not user:
+        return generic_response
+
+    payload = {"sub": user.username}
+    token = create_token(data=payload, type="reset")
+
+    task.add_task(send_email, email=email.email, username=user.username, token=token)
+
+    generic_response["token"] = token
+
+    return generic_response
+
+
+@router.post("/password-reset-confirm")
+async def confirm_password_reset(
+    reset_data: PwdResetData, db: db_dependency
+):
+    username = validate_refresh_token(reset_data.token)
+    user = await db.get_user_by_username(username)
+
+    if not user:
+        raise CREDENTIAL_EXEPTION
+
+    new_password = hash_password(reset_data.password)
+
+    await db.update_user(user.id, user_data={"password": new_password})
+    return {"detail": f"User {username} updated with a new password"}
