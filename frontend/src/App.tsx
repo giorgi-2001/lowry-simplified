@@ -17,6 +17,8 @@ import ProjectList from "./features/projects/ProjectList"
 import ProjectDetails from "./features/projects/ProjectDetails"
 import ExpCreationForm from "./features/experiments/ExpCreationForm"
 import ExpDetails from "./features/experiments/ExpDetails"
+import PwdResetConfirm from "./features/users/PwdResetConfirm"
+import PwdResetInit from "./features/users/PwdResetInit"
 
 const router = createBrowserRouter(createRoutesFromElements(
   <Route element={<Refresh />}>
@@ -33,6 +35,8 @@ const router = createBrowserRouter(createRoutesFromElements(
       <Route element={<RequireNoAuth />}> 
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<UserRegisterPage />} />
+        <Route path="/password-reset" element={<PwdResetInit />} />
+        <Route path="/password-reset-confirm" element={<PwdResetConfirm />} />
       </Route>
     </Route>
   </Route>

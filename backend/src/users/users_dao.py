@@ -1,4 +1,4 @@
-from sqlalchemy import select, delete
+from sqlalchemy import select, delete, update
 
 from ..database import SessionLocal
 from .models import User
@@ -20,6 +20,14 @@ class UserDao:
     async def get_user_by_username(cls, username: str):
         async with cls.session_maker() as session:
             statement = select(cls.model).where(cls.model.username == username)
+            result = await session.execute(statement)
+            user = result.scalar_one_or_none()
+            return user
+
+    @classmethod
+    async def get_user_by_email(cls, email: str):
+        async with cls.session_maker() as session:
+            statement = select(cls.model).where(cls.model.email == email)
             result = await session.execute(statement)
             user = result.scalar_one_or_none()
             return user
@@ -51,3 +59,16 @@ class UserDao:
                 await session.commit()
 
             return user.username
+
+    @classmethod
+    async def update_user(cls, user_id: int, user_data: dict):
+        async with cls.session_maker() as session:
+            async with session.begin():
+                statement = (
+                    update(cls.model)
+                    .where(cls.model.id == user_id)
+                    .values(**user_data)
+                )
+
+                await session.execute(statement)
+                await session.commit()

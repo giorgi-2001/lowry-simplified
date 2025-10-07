@@ -1,5 +1,5 @@
 import { useRegisterUserMutation } from "./userApiSlice"
-import { FormEvent, useState, useRef } from "react"
+import { FormEvent, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import useValidateForm from "./useValidateForm"
 

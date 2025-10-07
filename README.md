@@ -53,6 +53,6 @@ Lowry Simplified addresses these issues by providing a centralized, user-friendl
 
 ### Users:
 - [x] Sugnup page
-- [ ] Password Reset
+- [x] Password Reset
 - [ ] User Update
 - [ ] User Profie Page
