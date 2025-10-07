@@ -47,6 +47,7 @@ jobs:
       - name: Build backend Docker image
         run: |
           docker buildx build \
+            --load \
             --cache-from=type=local,src=/tmp/.buildx-cache \
             --cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=max \
             -t lowry-simplified:latest \
