@@ -91,7 +91,9 @@ services:
   frontend:
     container_name: lowry-frontend
     image: "lowry-frontend:v1"
-    build: ./frontend/loacl.Dockerfile
+    build:
+      context: ./frontend
+      dockerfile: local.Dockerfile
     volumes:
       - ./frontend:/app
       - /app/node_modules
