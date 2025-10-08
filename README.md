@@ -36,7 +36,7 @@ Lowry Simplified addresses these issues by providing a centralized, user-friendl
 1) X column header must contain: Either "X" or "C" AND Unit inside parenthesis (e.g., **X (mg/ml)**)  
 2) Y colums headers must contain either "Y" or "E".
 #### 3. Navigate to "projects" and create one;
-
+#### 4. Open a project and create an experiment;
 
 ## Features to be implemented:
 

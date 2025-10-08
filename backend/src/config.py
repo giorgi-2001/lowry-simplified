@@ -18,7 +18,7 @@ MINIO_BUCKET = os.environ.get("MINIO_BUCKET")
 MINIO_ENDPOINT = os.environ.get("MINIO_ENDPOINT")
 
 
-public_minio_url = f"http://localhost:9000/{MINIO_BUCKET}/"
+public_minio_url = f"/minio/{MINIO_BUCKET}/"
 
 
 aws_session = boto3.Session(
