@@ -1,0 +1,39 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: lowry-migration
+  namespace: lowry
+spec:
+  template:
+    spec:
+      containers:
+      - name: lowry-migration
+        image: giorgi023/lowry-backend:latest
+        command: ["alembic",  "upgrade", "head"]
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: lowry-secrets
+              key: user
+
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: lowry-secrets
+              key: password
+
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: lowry-secrets
+              key: postgres_db
+
+        - name: POSTGRES_HOST
+          value: lowry-db-service
+
+        - name: POSTGRES_PORT
+          value: "5432"
+
+      restartPolicy: Never
+  backoffLimit: 4

@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+# from fastapi.middleware.cors import CORSMiddleware
 
 from .users.router import router as user_router
 from .standards.router import router as standard_router
@@ -23,13 +23,13 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://lowry-frontend:5173"],
-    allow_methods=["POST", "PUT", "DELETE", "GET"],
-    allow_headers=["*"],
-    allow_credentials=True
-)
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["http://localhost:5173"],
+#     allow_methods=["POST", "PUT", "DELETE", "GET"],
+#     allow_headers=["*"],
+#     allow_credentials=True
+# )
 
 
 app.include_router(router=user_router, prefix=BASE_URL)

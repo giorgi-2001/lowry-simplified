@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lowry-celery
+  namespace: lowry
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lowry-celery
+  template:
+    metadata:
+      labels:
+        app: lowry-celery
+    spec:
+      containers:
+      - name: lowry-celery-container
+        image: giorgi023/lowry-backend:latest
+        imagePullPolicy: "Always"
+        command: [celery, -A, src.celery_worker, worker, --loglevel=info]
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: lowry-secrets
+              key: user
+
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: lowry-secrets
+              key: password
+
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: lowry-secrets
+              key: postgres_db
+
+        - name: POSTGRES_HOST
+          value: lowry-db-service
+
+        - name: POSTGRES_PORT
+          value: "5432"
+
+        - name: ACCESS_TOKEN_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: lowry-secrets
+              key: access_token_secret_key
+
+        - name: REFRESH_TOKEN_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: lowry-secrets
+              key: refresh_token_secret_key
+              
+        - name: ALGORITHM
+          valueFrom:
+            secretKeyRef:
+              name: lowry-secrets
+              key: algorithm
+
+        - name: MINIO_ROOT_USER
+          valueFrom:
+            secretKeyRef:
+              name: lowry-secrets
+              key: user
+
+        - name: MINIO_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: lowry-secrets
+              key: password
+
+        - name: MINIO_BUCKET
+          valueFrom:
+            secretKeyRef:
+              name: lowry-secrets
+              key: minio_bucket
+
+        - name: MINIO_ENDPOINT
+          valueFrom:
+            configMapKeyRef:
+              name: lowry-config
+              key: MINIO_ENDPOINT

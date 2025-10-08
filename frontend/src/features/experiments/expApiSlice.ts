@@ -1,6 +1,6 @@
 import { apiSlice } from "../../app/api/apiSlice"
 import { createEntityAdapter } from "@reduxjs/toolkit"
-import { Experiment, ExperimentData } from "./types"
+import { Experiment } from "./types"
 
 
 const experimentAdapter = createEntityAdapter({
