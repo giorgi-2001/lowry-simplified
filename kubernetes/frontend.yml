@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lowry-frontend
+  namespace: lowry
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lowry-frontend
+  template:
+    metadata:
+      labels:
+        app: lowry-frontend
+    spec:
+      containers:
+      - name: lowry-frontend-container
+        image: giorgi023/lowry-frontend:latest
+        imagePullPolicy: "Always"
+        ports:
+          - containerPort: 80
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lowry-frontend-service
+  namespace: lowry
+spec:
+  type: NodePort
+  selector:
+    app: lowry-frontend
+  ports:
+    - name: api
+      protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 31000

@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lowry-redis
+  namespace: lowry
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lowry-redis
+  template:
+    metadata:
+      labels:
+        app: lowry-redis
+    spec:
+      containers:
+        - name: lowry-redis
+          image: redis:7
+          ports:
+            - containerPort: 6379
+          command: ["redis-server"]
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lowry-redis
+  namespace: lowry
+spec:
+  selector:
+    app: lowry-redis
+  ports:
+    - name: redis
+      protocol: TCP
+      port: 6379
+      targetPort: 6379
+  type: ClusterIP
