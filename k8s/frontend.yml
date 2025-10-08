@@ -33,7 +33,6 @@ metadata:
   name: lowry-frontend-service
   namespace: lowry
 spec:
-  type: NodePort
   selector:
     app: lowry-frontend
   ports:
@@ -41,4 +40,3 @@ spec:
       protocol: TCP
       port: 80
       targetPort: 80
-      nodePort: 31000

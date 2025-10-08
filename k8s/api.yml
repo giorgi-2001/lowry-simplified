@@ -103,13 +103,13 @@ spec:
         - name: MAIL_USERNAME
           valueFrom: 
             secretKeyRef:
-              name: lowry-config
+              name: lowry-secrets
               key: MAIL_USERNAME
 
         - name: MAIL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: lowry-config
+              name: lowry-secrets
               key: MAIL_PASSWORD
 ---
 apiVersion: v1
@@ -118,7 +118,6 @@ metadata:
   name: lowry-api-service
   namespace: lowry
 spec:
-  type: NodePort
   selector:
     app: lowry-api
   ports:
@@ -126,4 +125,3 @@ spec:
       protocol: TCP
       port: 8000
       targetPort: 8000
-      nodePort: 31002

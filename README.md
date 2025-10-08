@@ -15,20 +15,31 @@ Lowry Simplified addresses these issues by providing a centralized, user-friendl
 ## Features
 
 1. Data Upload & Storage: Easily upload experiment data in common format (CSV) and store it securely in one place.
-2. Photometry Analysis: Automatically process and normalize photometry data, including absorbance calculations and background subtraction.
+2. Photometry Analysis: Automatically process and normalize photometry data.
 3. Visualization Tools: Generate interactive graphs and charts to visualize trends and results.
-4. Export & Reporting: Export processed data and results in multiple formats for further analysis or publication.
+4. Export & Reporting: Export processed data and results for further analysis or publication.
 5. User-Friendly Interface: Designed for scientists without extensive computational experience.
 
-## Setup
+
+## Setup via Kubernetes (recommended)
+1. Clone the repository;
+2. Modify file [/k8s/secrets.yml](/k8s/secrets.yml). enter valid values (base64 encoded) for  
+`MAIL_USERNAME` and `MAIL_PASSWORD`;
+3. Run `kube-deploy.sh` file. (You might need to change file permissions)  
+Linux command: `./kube-deploy.sh`;
+4. Access app on http://localhost.
+
+
+## Setup via docker-compose (for development)
 1. clone the repository;
 2. Copy `.env-copy` file into `.env` and fill all the variables.  
     *Note:* ALGORITHM - hashing algorithm e.g. HS256;  
             MINIO_ENDPOINT - `http://http://lowry-minio:9000`.
 3. Run command - `docker-compose up -d --build`
 4. Run command - `docker-compose exec -t backend alembic upgrade head`
-5. Open http://localhost:80 - for UI
+5. Open http://localhost - for UI
     / http://localhost:8000/docs - for API
+
 
 ## Usage
 #### 1. Register on app
