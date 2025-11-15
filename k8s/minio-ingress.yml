@@ -4,12 +4,20 @@ metadata:
   name: lowry-ingress-minio
   namespace: lowry
   annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /$1
     nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+        - lowrysimplified.giorgidevelops.space
+      secretName: lowry-tls
   rules:
-    - host: ""
+    - host: lowrysimplified.giorgidevelops.space
       http:
         paths:
           - path: /minio/(.*)
