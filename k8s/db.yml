@@ -32,10 +32,10 @@ spec:
             - containerPort: 5432
           resources:
             requests:
-              cpu: "250m"       
+              cpu: "250m"
               memory: "512Mi"
             limits:
-              cpu: "1"       
+              cpu: "1"
               memory: "1Gi"
           env:
             - name: POSTGRES_USER
@@ -53,6 +53,8 @@ spec:
                 secretKeyRef:
                   name: lowry-secrets
                   key: postgres_db
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
           volumeMounts:
             - name: pgdata
               mountPath: /var/lib/postgresql/data
