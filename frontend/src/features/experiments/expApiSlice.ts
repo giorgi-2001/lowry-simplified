@@ -17,7 +17,7 @@ type InitType = typeof initialState
 export const experimentApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
         getExperiments: builder.query({
-            query: (projectId: string) => `/experiments?project_id=${projectId}`,
+            query: (projectId: string) => `/experiments/?project_id=${projectId}`,
 
             transformResponse: (response: Experiment[]) => {
                 return experimentAdapter.setAll(initialState, response)
